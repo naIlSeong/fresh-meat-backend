@@ -1,3 +1,4 @@
+import * as Joi from '@hapi/joi';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
@@ -11,7 +12,21 @@ import { UserModule } from './user/user.module';
     }),
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['.development.env'],
+      envFilePath: [
+        process.env.NODE_ENV === 'development'
+          ? '.development.env'
+          : '.test.env',
+      ],
+      ignoreEnvFile: process.env.NODE_ENV === 'production',
+      validationSchema: Joi.object({
+        NODE_ENV: Joi.string()
+          .valid('development', 'production', 'test')
+          .required(),
+        DB_HOST: Joi.string().required(),
+        DB_PORT: Joi.string().required(),
+        DB_USERNAME: Joi.string().required(),
+        DB_DATABASE: Joi.string().required(),
+      }),
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
@@ -20,7 +35,7 @@ import { UserModule } from './user/user.module';
       username: process.env.DB_USERNAME,
       database: process.env.DB_DATABASE,
       synchronize: true,
-      logging: true,
+      logging: process.env.NODE_ENV !== 'production',
     }),
     UserModule,
   ],
