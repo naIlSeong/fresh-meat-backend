@@ -1,8 +1,10 @@
-import { Field } from '@nestjs/graphql';
+import { Field, InputType, ObjectType } from '@nestjs/graphql';
 import { IsEmail, IsString, Length } from 'class-validator';
 import { CommonEntity } from 'src/common/common.entity';
 import { Column, Entity } from 'typeorm';
 
+@InputType({ isAbstract: true })
+@ObjectType()
 @Entity()
 export class User extends CommonEntity {
   @Column()

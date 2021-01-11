@@ -30,7 +30,7 @@
 
 - **User Module**
 
-  - [ ] Create User
+  - [x] Create User
   - [ ] Login
   - [ ] User Detail
   - [ ] Update User
