@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from './user/user.entity';
 import { UserModule } from './user/user.module';
 
 @Module({
@@ -36,6 +37,7 @@ import { UserModule } from './user/user.module';
       database: process.env.DB_DATABASE,
       synchronize: true,
       logging: process.env.NODE_ENV !== 'production',
+      entities: [User],
     }),
     UserModule,
   ],
