@@ -1,7 +1,8 @@
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
 import { IsEmail, IsString, Length } from 'class-validator';
 import { CommonEntity } from 'src/common/common.entity';
-import { Column, Entity } from 'typeorm';
+import { BeforeInsert, BeforeUpdate, Column, Entity } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 
 @InputType({ isAbstract: true })
 @ObjectType()
@@ -22,4 +23,12 @@ export class User extends CommonEntity {
   @IsString()
   @Length(8)
   password: string;
+
+  @BeforeInsert()
+  @BeforeUpdate()
+  async hashPassword() {
+    if (this.password) {
+      this.password = await bcrypt.hash(this.password, +process.env.ROUNDS);
+    }
+  }
 }

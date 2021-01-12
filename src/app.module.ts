@@ -27,6 +27,7 @@ import { UserModule } from './user/user.module';
         DB_PORT: Joi.string().required(),
         DB_USERNAME: Joi.string().required(),
         DB_DATABASE: Joi.string().required(),
+        ROUNDS: Joi.string().default(10),
       }),
     }),
     TypeOrmModule.forRoot({
