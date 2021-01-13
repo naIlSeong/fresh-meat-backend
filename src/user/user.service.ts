@@ -3,7 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CommonOutput } from 'src/common/common.dto';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
+import { LoginDto } from './dto/login-dto';
 import { User } from './user.entity';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -32,6 +34,32 @@ export class UserService {
       await this.userRepo.save(
         this.userRepo.create({ username, email, password }),
       );
+      return {
+        ok: true,
+      };
+    } catch (error) {
+      return {
+        error: 'Unexpected error',
+      };
+    }
+  }
+
+  async login({ email, password }: LoginDto): Promise<CommonOutput> {
+    try {
+      const user = await this.userRepo.findOne({ email });
+      if (!user) {
+        return {
+          error: 'Email not found',
+        };
+      }
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (!isMatch) {
+        return {
+          error: 'Wrong password',
+        };
+      }
+      // TODO session save
+      // TODO genereate token?
       return {
         ok: true,
       };
