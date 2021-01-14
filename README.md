@@ -31,7 +31,7 @@
 - **User Module**
 
   - [x] Create User
-  - [ ] Login
+  - [x] Login
   - [ ] User Detail
   - [ ] Update User
   - [ ] Edit User
