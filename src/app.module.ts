@@ -11,6 +11,7 @@ import { AuthModule } from './auth/auth.module';
   imports: [
     GraphQLModule.forRoot({
       autoSchemaFile: true,
+      context: ({ req }) => ({ sessionId: req.headers['sessionid'] }),
     }),
     ConfigModule.forRoot({
       isGlobal: true,

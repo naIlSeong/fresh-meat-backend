@@ -1,5 +1,4 @@
-import { ConfigService } from '@nestjs/config';
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CommonOutput } from 'src/common/common.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginDto } from './dto/login-dto';
@@ -22,7 +21,10 @@ export class UserResolver {
   }
 
   @Mutation((returns) => CommonOutput)
-  login(@Args('input') loginDto: LoginDto): Promise<CommonOutput> {
-    return this.userService.login(loginDto);
+  login(
+    @Args('input') loginDto: LoginDto,
+    @Context() ctx: any,
+  ): Promise<CommonOutput> {
+    return this.userService.login(loginDto, ctx.req.session);
   }
 }

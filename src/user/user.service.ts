@@ -44,7 +44,7 @@ export class UserService {
     }
   }
 
-  async login({ email, password }: LoginDto): Promise<CommonOutput> {
+  async login({ email, password }: LoginDto, session): Promise<CommonOutput> {
     try {
       const user = await this.userRepo.findOne({ email });
       if (!user) {
@@ -59,6 +59,7 @@ export class UserService {
         };
       }
       // TODO session save
+      session.user = { ...user };
       // TODO genereate token?
       return {
         ok: true,
