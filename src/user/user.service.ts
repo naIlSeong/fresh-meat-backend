@@ -52,15 +52,15 @@ export class UserService {
           error: 'Email not found',
         };
       }
+
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) {
         return {
           error: 'Wrong password',
         };
       }
-      // TODO session save
+
       session.user = { ...user };
-      // TODO genereate token?
       return {
         ok: true,
       };

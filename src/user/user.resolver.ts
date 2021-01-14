@@ -1,6 +1,4 @@
-import { UseGuards } from '@nestjs/common';
 import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { AuthGuard } from 'src/auth/auth.guard';
 import { Public } from 'src/common/common.constant';
 import { CommonOutput } from 'src/common/common.dto';
 import { CurrentUser } from '../auth/auth.decorator';
@@ -18,17 +16,7 @@ export class UserResolver {
     return user;
   }
 
-  @Query((returns) => String)
-  loggedIn() {
-    return 'Logged In Already';
-  }
-
   @Public()
-  @Query((returns) => String)
-  loggedOut() {
-    return 'Public!!!';
-  }
-
   @Mutation((returns) => CommonOutput)
   createUser(
     @Args('input') createUserDto: CreateUserDto,
@@ -36,6 +24,7 @@ export class UserResolver {
     return this.userService.createUser(createUserDto);
   }
 
+  @Public()
   @Mutation((returns) => CommonOutput)
   login(
     @Args('input') loginDto: LoginDto,
