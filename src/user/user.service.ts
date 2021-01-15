@@ -44,7 +44,10 @@ export class UserService {
     }
   }
 
-  async login({ email, password }: LoginDto, session): Promise<CommonOutput> {
+  async login(
+    { email, password }: LoginDto,
+    session: any,
+  ): Promise<CommonOutput> {
     try {
       const user = await this.userRepo.findOne({ email });
       if (!user) {
@@ -61,6 +64,21 @@ export class UserService {
       }
 
       session.user = { ...user };
+      return {
+        ok: true,
+      };
+    } catch (error) {
+      return {
+        error: 'Unexpected error',
+      };
+    }
+  }
+
+  async logout(session: any): Promise<CommonOutput> {
+    try {
+      session.destroy(function () {
+        session;
+      });
       return {
         ok: true,
       };

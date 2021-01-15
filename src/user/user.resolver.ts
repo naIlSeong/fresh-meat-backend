@@ -32,4 +32,9 @@ export class UserResolver {
   ): Promise<CommonOutput> {
     return this.userService.login(loginDto, ctx.req.session);
   }
+
+  @Mutation((returns) => CommonOutput)
+  logout(@Context() ctx: any): Promise<CommonOutput> {
+    return this.userService.logout(ctx.req.session);
+  }
 }
