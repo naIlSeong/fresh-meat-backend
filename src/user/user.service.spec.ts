@@ -3,12 +3,15 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import { UserService } from './user.service';
+import * as bcrypt from 'bcrypt';
 
 const mockRepo = () => ({
   findOne: jest.fn(),
   save: jest.fn(),
   create: jest.fn(),
 });
+
+jest.mock('bcrypt');
 
 type MockRepo<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
 
@@ -86,6 +89,61 @@ describe('User Service', () => {
       });
       expect(userRepo.save).toBeCalled();
       expect(userRepo.create).toBeCalledWith(newUser);
+    });
+  });
+
+  describe('login', () => {
+    const mockUser = {
+      email: 'mockEmail',
+      password: 'mockPassword',
+    };
+    const mockSession = {};
+
+    let bcryptCompare: jest.Mock;
+
+    it('Email not found', async () => {
+      userRepo.findOne.mockResolvedValue(null);
+
+      const result = await userService.login(mockUser, mockSession);
+      expect(result).toEqual({
+        error: 'Email not found',
+      });
+    });
+
+    it('Wrong password', async () => {
+      userRepo.findOne.mockResolvedValue(mockUser);
+      bcryptCompare = jest.fn().mockReturnValue(false);
+      (bcrypt.compare as jest.Mock) = bcryptCompare;
+
+      const result = await userService.login(mockUser, mockSession);
+      expect(result).toEqual({
+        error: 'Wrong password',
+      });
+    });
+
+    it('Unexpected error', async () => {
+      userRepo.findOne.mockRejectedValue(new Error());
+
+      const result = await userService.login(mockUser, mockSession);
+      expect(result).toEqual({
+        error: 'Unexpected error',
+      });
+    });
+
+    it('Login', async () => {
+      userRepo.findOne.mockResolvedValue(mockUser);
+      bcryptCompare = jest.fn().mockReturnValue(true);
+      (bcrypt.compare as jest.Mock) = bcryptCompare;
+
+      const result = await userService.login(mockUser, mockSession);
+      expect(result).toEqual({
+        ok: true,
+      });
+      expect(mockSession).toEqual({
+        user: {
+          ...mockUser,
+        },
+      });
     });
   });
 });
