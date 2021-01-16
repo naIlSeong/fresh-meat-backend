@@ -32,7 +32,7 @@
 
   - [x] Create User
   - [x] Login
-  - [ ] User Detail
+  - [x] User Detail
   - [ ] Update User
   - [ ] Edit User
   - [ ] Delete User

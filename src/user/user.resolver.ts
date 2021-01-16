@@ -4,6 +4,7 @@ import { CommonOutput } from 'src/common/common.dto';
 import { CurrentUser } from '../auth/auth.decorator';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginDto } from './dto/login-dto';
+import { UserDetailDto, UserDetailOutput } from './dto/user-detail.dto';
 import { User } from './user.entity';
 import { UserService } from './user.service';
 
@@ -36,5 +37,10 @@ export class UserResolver {
   @Mutation((returns) => CommonOutput)
   logout(@Context() ctx: any): Promise<CommonOutput> {
     return this.userService.logout(ctx.req.session);
+  }
+
+  @Query((returns) => UserDetailOutput)
+  userDetail(@Args('input') userDetailDto: UserDetailDto) {
+    return this.userService.userDetail(userDetailDto);
   }
 }

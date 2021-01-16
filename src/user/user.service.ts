@@ -6,6 +6,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { LoginDto } from './dto/login-dto';
 import { User } from './user.entity';
 import * as bcrypt from 'bcrypt';
+import { UserDetailDto, UserDetailOutput } from './dto/user-detail.dto';
 
 @Injectable()
 export class UserService {
@@ -81,6 +82,25 @@ export class UserService {
       });
       return {
         ok: true,
+      };
+    } catch (error) {
+      return {
+        error: 'Unexpected error',
+      };
+    }
+  }
+
+  async userDetail({ userId }: UserDetailDto): Promise<UserDetailOutput> {
+    try {
+      const user = await this.userRepo.findOne({ id: userId });
+      if (!user) {
+        return {
+          error: 'User not found',
+        };
+      }
+      return {
+        ok: true,
+        user,
       };
     } catch (error) {
       return {

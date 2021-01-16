@@ -157,7 +157,7 @@ describe('User Service', () => {
     it('Error : User not found', async () => {
       userRepo.findOne.mockResolvedValue(null);
 
-      const result = userService.userDetail(mockUser.id);
+      const result = await userService.userDetail({ userId: mockUser.id });
       expect(result).toEqual({
         error: 'User not found',
       });
@@ -166,7 +166,7 @@ describe('User Service', () => {
     it('Error : Unexpected error', async () => {
       userRepo.findOne.mockRejectedValue(new Error());
 
-      const result = userService.userDetail(mockUser.id);
+      const result = await userService.userDetail({ userId: mockUser.id });
       expect(result).toEqual({
         error: 'Unexpected error',
       });
@@ -177,7 +177,7 @@ describe('User Service', () => {
         ...mockUser,
       });
 
-      const result = userService.userDetail(mockUser.id);
+      const result = await userService.userDetail({ userId: mockUser.id });
       expect(result).toEqual({
         ok: true,
         user: { ...mockUser },
