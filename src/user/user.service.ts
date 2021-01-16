@@ -77,7 +77,7 @@ export class UserService {
   async logout(session: any): Promise<CommonOutput> {
     try {
       session.destroy(function () {
-        session;
+        session.user;
       });
       return {
         ok: true,

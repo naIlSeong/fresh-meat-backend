@@ -101,7 +101,7 @@ describe('User Service', () => {
 
     let bcryptCompare: jest.Mock;
 
-    it('Email not found', async () => {
+    it('Error : Email not found', async () => {
       userRepo.findOne.mockResolvedValue(null);
 
       const result = await userService.login(mockUser, mockSession);
@@ -110,7 +110,7 @@ describe('User Service', () => {
       });
     });
 
-    it('Wrong password', async () => {
+    it('Error : Wrong password', async () => {
       userRepo.findOne.mockResolvedValue(mockUser);
       bcryptCompare = jest.fn().mockReturnValue(false);
       (bcrypt.compare as jest.Mock) = bcryptCompare;
@@ -121,7 +121,7 @@ describe('User Service', () => {
       });
     });
 
-    it('Unexpected error', async () => {
+    it('Error : Unexpected error', async () => {
       userRepo.findOne.mockRejectedValue(new Error());
 
       const result = await userService.login(mockUser, mockSession);
@@ -130,7 +130,7 @@ describe('User Service', () => {
       });
     });
 
-    it('Login', async () => {
+    it('Login & Save user on session', async () => {
       userRepo.findOne.mockResolvedValue(mockUser);
       bcryptCompare = jest.fn().mockReturnValue(true);
       (bcrypt.compare as jest.Mock) = bcryptCompare;
