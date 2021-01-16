@@ -146,4 +146,42 @@ describe('User Service', () => {
       });
     });
   });
+
+  describe('userDetail', () => {
+    const mockUser = {
+      id: 1,
+      username: 'mockUsername',
+      email: 'mockUsername',
+    };
+
+    it('Error : User not found', async () => {
+      userRepo.findOne.mockResolvedValue(null);
+
+      const result = userService.userDetail(mockUser.id);
+      expect(result).toEqual({
+        error: 'User not found',
+      });
+    });
+
+    it('Error : Unexpected error', async () => {
+      userRepo.findOne.mockRejectedValue(new Error());
+
+      const result = userService.userDetail(mockUser.id);
+      expect(result).toEqual({
+        error: 'Unexpected error',
+      });
+    });
+
+    it('Find user ID : 1', async () => {
+      userRepo.findOne.mockResolvedValue({
+        ...mockUser,
+      });
+
+      const result = userService.userDetail(mockUser.id);
+      expect(result).toEqual({
+        ok: true,
+        user: { ...mockUser },
+      });
+    });
+  });
 });
