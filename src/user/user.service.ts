@@ -7,6 +7,7 @@ import { LoginDto } from './dto/login-dto';
 import { User } from './user.entity';
 import * as bcrypt from 'bcrypt';
 import { UserDetailDto, UserDetailOutput } from './dto/user-detail.dto';
+import { IContext, ISession } from 'src/common/common.interface';
 
 @Injectable()
 export class UserService {
@@ -47,7 +48,7 @@ export class UserService {
 
   async login(
     { email, password }: LoginDto,
-    session: any,
+    session: ISession,
   ): Promise<CommonOutput> {
     try {
       const user = await this.userRepo.findOne({ email });
@@ -63,8 +64,7 @@ export class UserService {
           error: 'Wrong password',
         };
       }
-
-      session.user = { ...user };
+      session.user = user;
       return {
         ok: true,
       };
@@ -75,11 +75,14 @@ export class UserService {
     }
   }
 
-  async logout(session: any): Promise<CommonOutput> {
+  async logout(context: IContext): Promise<CommonOutput> {
     try {
-      session.destroy(function () {
-        session.user;
+      context.req.session.destroy((err) => {
+        if (err) {
+          throw new Error(err);
+        }
       });
+
       return {
         ok: true,
       };

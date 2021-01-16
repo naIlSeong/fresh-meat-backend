@@ -1,6 +1,7 @@
 import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Public } from 'src/common/common.constant';
 import { CommonOutput } from 'src/common/common.dto';
+import { IContext } from 'src/common/common.interface';
 import { CurrentUser } from '../auth/auth.decorator';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginDto } from './dto/login-dto';
@@ -29,14 +30,14 @@ export class UserResolver {
   @Mutation((returns) => CommonOutput)
   login(
     @Args('input') loginDto: LoginDto,
-    @Context() ctx: any,
+    @Context() context: IContext,
   ): Promise<CommonOutput> {
-    return this.userService.login(loginDto, ctx.req.session);
+    return this.userService.login(loginDto, context.req.session);
   }
 
   @Mutation((returns) => CommonOutput)
-  logout(@Context() ctx: any): Promise<CommonOutput> {
-    return this.userService.logout(ctx.req.session);
+  logout(@Context() context: IContext): Promise<CommonOutput> {
+    return this.userService.logout(context);
   }
 
   @Query((returns) => UserDetailOutput)
