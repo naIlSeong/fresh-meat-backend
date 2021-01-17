@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import { UserService } from './user.service';
 import * as bcrypt from 'bcrypt';
-import { ISession } from 'src/common/common.interface';
+import { IContext, ISession } from 'src/common/common.interface';
 
 const mockRepo = () => ({
   findOne: jest.fn(),
@@ -145,7 +145,20 @@ describe('User Service', () => {
     });
   });
 
+  // TODO : Fix Error
   describe('logout', () => {
+    let mockContext: IContext;
+    // mockContext.req.session.destroy = jest
+    //   .fn()
+    //   .mockImplementation(() => Promise.reject());
+
+    it('Error : Unexpected error', async () => {
+      const result = await userService.logout(mockContext);
+      expect(result).toEqual({
+        ok: true,
+      });
+    });
+
     it.todo('Logout & Destroy Session');
   });
 
