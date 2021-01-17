@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import { UserService } from './user.service';
 import * as bcrypt from 'bcrypt';
+import { ISession } from 'src/common/common.interface';
 
 const mockRepo = () => ({
   findOne: jest.fn(),
@@ -18,6 +19,7 @@ type MockRepo<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
 describe('User Service', () => {
   let userService: UserService;
   let userRepo: MockRepo<User>;
+  let mockUser: User;
 
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -32,6 +34,11 @@ describe('User Service', () => {
 
     userService = moduleRef.get<UserService>(UserService);
     userRepo = moduleRef.get(getRepositoryToken(User));
+
+    mockUser = new User();
+    mockUser.id = 1;
+    mockUser.username = 'mockUsername';
+    mockUser.email = 'mockEmail';
   });
 
   describe('createUser', () => {
@@ -93,13 +100,8 @@ describe('User Service', () => {
   });
 
   describe('login', () => {
-    const mockUser = {
-      email: 'mockEmail',
-      password: 'mockPassword',
-    };
-    const mockSession = {};
-
     let bcryptCompare: jest.Mock;
+    let mockSession: ISession = { id: 'xxx' };
 
     it('Error : Email not found', async () => {
       userRepo.findOne.mockResolvedValue(null);
@@ -139,21 +141,15 @@ describe('User Service', () => {
       expect(result).toEqual({
         ok: true,
       });
-      expect(mockSession).toEqual({
-        user: {
-          ...mockUser,
-        },
-      });
+      expect(mockSession).toEqual({ id: 'xxx', user: mockUser });
     });
   });
 
-  describe('userDetail', () => {
-    const mockUser = {
-      id: 1,
-      username: 'mockUsername',
-      email: 'mockUsername',
-    };
+  describe('logout', () => {
+    it.todo('Logout & Destroy Session');
+  });
 
+  describe('userDetail', () => {
     it('Error : User not found', async () => {
       userRepo.findOne.mockResolvedValue(null);
 
