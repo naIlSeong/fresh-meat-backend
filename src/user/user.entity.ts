@@ -1,8 +1,9 @@
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
 import { IsEmail, IsString, Length } from 'class-validator';
 import { CommonEntity } from 'src/common/common.entity';
-import { BeforeInsert, BeforeUpdate, Column, Entity } from 'typeorm';
+import { BeforeInsert, BeforeUpdate, Column, Entity, OneToMany } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { Product } from 'src/product/product.entity';
 
 @InputType({ isAbstract: true })
 @ObjectType()
@@ -23,6 +24,17 @@ export class User extends CommonEntity {
   @IsString()
   @Length(8)
   password: string;
+
+  @OneToMany((type) => Product, (product) => product.seller, {
+    nullable: true,
+    onDelete: 'CASCADE',
+  })
+  @Field((type) => [Product], { nullable: true })
+  sellingProducts?: Product[];
+
+  @OneToMany((type) => Product, (product) => product.bidder, { nullable: true })
+  @Field((type) => [Product], { nullable: true })
+  biddingProducts?: Product[];
 
   @BeforeUpdate()
   @BeforeInsert()

@@ -6,6 +6,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user/user.entity';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
+import { ProductModule } from './product/product.module';
+import { Product } from './product/product.entity';
 
 @Module({
   imports: [
@@ -40,10 +42,11 @@ import { AuthModule } from './auth/auth.module';
       database: process.env.DB_DATABASE,
       synchronize: true,
       logging: process.env.NODE_ENV !== 'production',
-      entities: [User],
+      entities: [User, Product],
     }),
     UserModule,
     AuthModule,
+    ProductModule,
   ],
 })
 export class AppModule {}
