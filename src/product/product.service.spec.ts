@@ -7,6 +7,7 @@ import { ProductService } from './product.service';
 
 const mockRepo = () => ({
   create: jest.fn(),
+  save: jest.fn(),
 });
 
 type MockRepo<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
@@ -42,23 +43,49 @@ describe('ProductService', () => {
   });
 
   describe('uploadProduct', () => {
-    it('Error : Unexpected error', async () => {
-      productRepo.create.mockRejectedValue(new Error());
-
-      const result = await productService.uploadProduct({
-        productName: mockProduct.productName,
-        startPrice: mockProduct.startPrice,
+    it('Error : Product name is required', async () => {
+      const result = await productService.uploadProduct(
+        { startPrice: mockProduct.startPrice },
+        mockUser,
+      );
+      expect(result).toEqual({
+        error: 'Product name is required',
       });
+    });
+
+    it('Error : Start price is required', async () => {
+      const result = await productService.uploadProduct(
+        { productName: mockProduct.productName },
+        mockUser,
+      );
+      expect(result).toEqual({
+        error: 'Start price is required',
+      });
+    });
+
+    it('Error : Unexpected error', async () => {
+      productRepo.save.mockRejectedValue(new Error());
+
+      const result = await productService.uploadProduct(
+        {
+          productName: mockProduct.productName,
+          startPrice: mockProduct.startPrice,
+        },
+        mockUser,
+      );
       expect(result).toEqual({
         error: 'Unexpected error',
       });
     });
 
     it('Upload new product', async () => {
-      const result = await productService.uploadProduct({
-        productName: mockProduct.productName,
-        startPrice: mockProduct.startPrice,
-      });
+      const result = await productService.uploadProduct(
+        {
+          productName: mockProduct.productName,
+          startPrice: mockProduct.startPrice,
+        },
+        mockUser,
+      );
       expect(result).toEqual({
         ok: true,
       });
