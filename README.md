@@ -38,7 +38,7 @@
         <br>
 
 - **Product Module**
-  - [ ] Upload Product
+  - [x] Upload Product
   - [ ] Delete Product
   - [ ] Edit Product
   - [ ] Bid on Product
