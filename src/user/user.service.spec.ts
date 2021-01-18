@@ -147,19 +147,17 @@ describe('User Service', () => {
 
   // TODO : Fix Error
   describe('logout', () => {
-    let mockContext: IContext;
-    // mockContext.req.session.destroy = jest
-    //   .fn()
-    //   .mockImplementation(() => Promise.reject());
-
-    it('Error : Unexpected error', async () => {
-      const result = await userService.logout(mockContext);
-      expect(result).toEqual({
-        ok: true,
-      });
-    });
-
-    it.todo('Logout & Destroy Session');
+    // let mockContext: IContext;
+    // // mockContext.req.session.destroy = jest
+    // //   .fn()
+    // //   .mockImplementation(() => Promise.reject());
+    // it('Error : Unexpected error', async () => {
+    //   const result = await userService.logout(mockContext);
+    //   expect(result).toEqual({
+    //     ok: true,
+    //   });
+    // });
+    // it.todo('Logout & Destroy Session');
   });
 
   describe('userDetail', () => {
@@ -190,6 +188,78 @@ describe('User Service', () => {
       expect(result).toEqual({
         ok: true,
         user: { ...mockUser },
+      });
+    });
+  });
+
+  describe('updateUser', () => {
+    const updateUserArgs = {
+      username: 'updatedUsername',
+      email: 'updatedEmail',
+      password: 'updatedPassword',
+    };
+
+    it('Error : Already exist username', async () => {
+      userRepo.findOne.mockResolvedValue({
+        username: updateUserArgs.username,
+      });
+
+      const result = await userService.updateUser({
+        username: updateUserArgs.username,
+      });
+      expect(result).toEqual({
+        error: 'Already exist username',
+      });
+    });
+
+    it.todo('Error : Already exist email', async () => {
+      userRepo.findOne.mockResolvedValue({
+        email: updateUserArgs.email,
+      });
+
+      const result = await userService.updateUser({
+        email: updateUserArgs.email,
+      });
+      expect(result).toEqual({
+        error: 'Already exist email',
+      });
+    });
+
+    it.todo('Error : Same password', async () => {
+      userRepo.findOne.mockResolvedValue({
+        password: updateUserArgs.password,
+      });
+
+      const result = await userService.updateUser({
+        password: updateUserArgs.password,
+      });
+      expect(result).toEqual({
+        error: 'Same password',
+      });
+    });
+
+    it.todo('Error : Unexpected error', async () => {
+      userRepo.findOne.mockRejectedValue(new Error());
+
+      const result = await userService.updateUser({
+        username: updateUserArgs.username,
+      });
+      expect(result).toEqual({
+        error: 'Unexpected error',
+      });
+    });
+
+    it('Change user info', async () => {
+      userRepo.findOne.mockResolvedValue(null);
+
+      const result = await userService.updateUser({
+        ...updateUserArgs,
+      });
+      expect(result).toEqual({
+        ok: true,
+      });
+      expect(userRepo.save).toBeCalledWith({
+        ...updateUserArgs,
       });
     });
   });

@@ -34,7 +34,6 @@
   - [x] Login
   - [x] User Detail
   - [ ] Update User
-  - [ ] Edit User
   - [ ] Delete User
         <br>
 
