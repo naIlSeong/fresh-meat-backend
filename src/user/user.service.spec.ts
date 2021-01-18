@@ -198,69 +198,84 @@ describe('User Service', () => {
       email: 'updatedEmail',
       password: 'updatedPassword',
     };
+    let bcryptCompare: jest.Mock;
+    let mockContext: IContext;
 
     it('Error : Already exist username', async () => {
+      userRepo.findOne.mockResolvedValueOnce(mockUser);
       userRepo.findOne.mockResolvedValue({
         username: updateUserArgs.username,
       });
 
-      const result = await userService.updateUser({
-        username: updateUserArgs.username,
-      });
+      const result = await userService.updateUser(
+        { username: updateUserArgs.username },
+        mockUser.id,
+        mockContext,
+      );
       expect(result).toEqual({
         error: 'Already exist username',
       });
     });
 
-    it.todo('Error : Already exist email', async () => {
+    it('Error : Already exist email', async () => {
+      userRepo.findOne.mockResolvedValueOnce(mockUser);
       userRepo.findOne.mockResolvedValue({
         email: updateUserArgs.email,
       });
 
-      const result = await userService.updateUser({
-        email: updateUserArgs.email,
-      });
+      const result = await userService.updateUser(
+        { email: updateUserArgs.email },
+        mockUser.id,
+        mockContext,
+      );
       expect(result).toEqual({
         error: 'Already exist email',
       });
     });
 
-    it.todo('Error : Same password', async () => {
-      userRepo.findOne.mockResolvedValue({
-        password: updateUserArgs.password,
-      });
+    it('Error : Same password', async () => {
+      userRepo.findOne.mockResolvedValueOnce(mockUser);
+      bcryptCompare = jest.fn().mockReturnValue(true);
+      (bcrypt.compare as jest.Mock) = bcryptCompare;
 
-      const result = await userService.updateUser({
-        password: updateUserArgs.password,
-      });
+      const result = await userService.updateUser(
+        { password: updateUserArgs.password },
+        mockUser.id,
+        mockContext,
+      );
       expect(result).toEqual({
         error: 'Same password',
       });
     });
 
-    it.todo('Error : Unexpected error', async () => {
+    it('Error : Unexpected error', async () => {
       userRepo.findOne.mockRejectedValue(new Error());
 
-      const result = await userService.updateUser({
-        username: updateUserArgs.username,
-      });
+      const result = await userService.updateUser(
+        { username: updateUserArgs.username },
+        mockUser.id,
+        mockContext,
+      );
       expect(result).toEqual({
         error: 'Unexpected error',
       });
     });
 
     it('Change user info', async () => {
+      userRepo.findOne.mockResolvedValueOnce(mockUser);
       userRepo.findOne.mockResolvedValue(null);
+      bcryptCompare = jest.fn().mockReturnValue(false);
+      (bcrypt.compare as jest.Mock) = bcryptCompare;
 
-      const result = await userService.updateUser({
-        ...updateUserArgs,
-      });
+      const result = await userService.updateUser(
+        { ...updateUserArgs },
+        mockUser.id,
+        mockContext,
+      );
       expect(result).toEqual({
         ok: true,
       });
-      expect(userRepo.save).toBeCalledWith({
-        ...updateUserArgs,
-      });
+      expect(userRepo.save).toBeCalled();
     });
   });
 });
