@@ -24,11 +24,15 @@ export class User extends CommonEntity {
   @Length(8)
   password: string;
 
-  @BeforeInsert()
   @BeforeUpdate()
-  async hashPassword() {
-    if (this.password) {
-      this.password = await bcrypt.hash(this.password, +process.env.ROUNDS);
+  @BeforeInsert()
+  async hashPassword(): Promise<void> {
+    try {
+      if (this.password) {
+        this.password = await bcrypt.hash(this.password, +process.env.ROUNDS);
+      }
+    } catch (error) {
+      console.log(error);
     }
   }
 }

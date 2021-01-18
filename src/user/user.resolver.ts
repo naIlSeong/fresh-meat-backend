@@ -5,6 +5,7 @@ import { IContext } from 'src/common/common.interface';
 import { CurrentUser } from '../auth/auth.decorator';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginDto } from './dto/login-dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { UserDetailDto, UserDetailOutput } from './dto/user-detail.dto';
 import { User } from './user.entity';
 import { UserService } from './user.service';
@@ -43,5 +44,14 @@ export class UserResolver {
   @Query((returns) => UserDetailOutput)
   userDetail(@Args('input') userDetailDto: UserDetailDto) {
     return this.userService.userDetail(userDetailDto);
+  }
+
+  @Mutation((returns) => CommonOutput)
+  updateUser(
+    @Args('input') updateUserDto: UpdateUserDto,
+    @CurrentUser() user: User,
+    @Context() context: IContext,
+  ) {
+    return this.userService.updateUser(updateUserDto, user.id, context);
   }
 }

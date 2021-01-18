@@ -8,6 +8,7 @@ import { User } from './user.entity';
 import * as bcrypt from 'bcrypt';
 import { UserDetailDto, UserDetailOutput } from './dto/user-detail.dto';
 import { IContext, ISession } from 'src/common/common.interface';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService {
@@ -104,6 +105,55 @@ export class UserService {
       return {
         ok: true,
         user,
+      };
+    } catch (error) {
+      return {
+        error: 'Unexpected error',
+      };
+    }
+  }
+
+  async updateUser(
+    { username, email, password }: UpdateUserDto,
+    userId: number,
+    context: IContext,
+  ): Promise<CommonOutput> {
+    try {
+      const user = await this.userRepo.findOne({ id: userId });
+
+      if (username) {
+        const exist = await this.userRepo.findOne({ username });
+        if (exist && exist.id !== user.id) {
+          return {
+            error: 'Already exist username',
+          };
+        }
+        user.username = username;
+      }
+
+      if (email) {
+        const exist = await this.userRepo.findOne({ email });
+        if (exist && exist.id !== user.id) {
+          return {
+            error: 'Already exist email',
+          };
+        }
+        user.email = email;
+      }
+
+      if (password) {
+        const isSamePassword = await bcrypt.compare(password, user.password);
+        if (isSamePassword) {
+          return {
+            error: 'Same password',
+          };
+        }
+        user.password = password;
+      }
+      await this.userRepo.save(user);
+      await this.logout(context);
+      return {
+        ok: true,
       };
     } catch (error) {
       return {
