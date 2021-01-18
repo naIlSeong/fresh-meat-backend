@@ -161,4 +161,19 @@ export class UserService {
       };
     }
   }
+
+  async deleteUser(userId: number, context: IContext): Promise<CommonOutput> {
+    try {
+      await this.userRepo.delete({ id: userId });
+      await this.logout(context);
+
+      return {
+        ok: true,
+      };
+    } catch (error) {
+      return {
+        error: 'Unexpected error',
+      };
+    }
+  }
 }

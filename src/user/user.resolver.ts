@@ -54,4 +54,9 @@ export class UserResolver {
   ) {
     return this.userService.updateUser(updateUserDto, user.id, context);
   }
+
+  @Mutation((returns) => CommonOutput)
+  deleteUser(@CurrentUser() user: User, @Context() context: IContext) {
+    return this.userService.deleteUser(user.id, context);
+  }
 }

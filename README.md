@@ -34,7 +34,7 @@
   - [x] Login
   - [x] User Detail
   - [x] Update User
-  - [ ] Delete User
+  - [x] Delete User
         <br>
 
 - **Product Module**
