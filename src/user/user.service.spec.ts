@@ -10,6 +10,7 @@ const mockRepo = () => ({
   findOne: jest.fn(),
   save: jest.fn(),
   create: jest.fn(),
+  delete: jest.fn(),
 });
 
 jest.mock('bcrypt');
@@ -276,6 +277,27 @@ describe('User Service', () => {
         ok: true,
       });
       expect(userRepo.save).toBeCalled();
+    });
+  });
+
+  describe('deleteUser', () => {
+    let mockContext: IContext;
+
+    it('Error : Unexpected error', async () => {
+      userRepo.delete.mockRejectedValue(new Error());
+
+      const result = await userService.deleteUser(mockUser.id, mockContext);
+      expect(result).toEqual({
+        error: 'Unexpected error',
+      });
+    });
+
+    it('Delete user & Logout', async () => {
+      const result = await userService.deleteUser(mockUser.id, mockContext);
+      expect(result).toEqual({
+        ok: true,
+      });
+      expect(userRepo.delete).toHaveBeenCalledWith({ id: mockUser.id });
     });
   });
 });
