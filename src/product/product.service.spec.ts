@@ -8,6 +8,8 @@ import { ProductService } from './product.service';
 const mockRepo = () => ({
   create: jest.fn(),
   save: jest.fn(),
+  findOne: jest.fn(),
+  delete: jest.fn(),
 });
 
 type MockRepo<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
@@ -91,6 +93,54 @@ describe('ProductService', () => {
       });
       expect(productRepo.create).toBeCalled();
       expect(productRepo.save).toBeCalled();
+    });
+  });
+
+  describe('deleteProduct', () => {
+    let USER: User;
+    USER = new User();
+    USER.id = 8;
+
+    let PRODUCT: Product;
+    PRODUCT = new Product();
+    PRODUCT.id = 9;
+    PRODUCT.seller = mockUser;
+
+    it.todo('Error : Product not found', async () => {
+      productRepo.findOne.mockResolvedValue(null);
+
+      const result = await productService({ productId: PRODUCT.id }, mockUser);
+      expect(result).toEqual({
+        error: 'Product not found',
+      });
+    });
+
+    it.todo('Error : Not your product', async () => {
+      productRepo.findOne.mockResolvedValue(PRODUCT);
+
+      const result = await productService({ productId: PRODUCT.id }, USER);
+      expect(result).toEqual({
+        error: 'Not your product',
+      });
+    });
+
+    it.todo('Error : Unexpected error', async () => {
+      productRepo.findOne.mockRejectedValue(new Error());
+
+      const result = await productService({ productId: PRODUCT.id }, mockUser);
+      expect(result).toEqual({
+        error: 'Unexpected error',
+      });
+    });
+
+    it.todo('Delete product ID : 9', async () => {
+      productRepo.findOne.mockResolvedValue(PRODUCT);
+
+      const result = await productService({ productId: PRODUCT.id }, mockUser);
+      expect(result).toEqual({
+        ok: true,
+      });
+      expect(productRepo.delete).toBeCalled();
     });
   });
 });
