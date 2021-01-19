@@ -43,7 +43,7 @@
   - [x] Delete Product
   - [x] Edit Product
   - [ ] Bid on Product
-  - [ ] Product Detail
+  - [x] Product Detail
   - [ ] Edit Progress
     - Waiting
     - Under Auction

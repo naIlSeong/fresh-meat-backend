@@ -5,6 +5,10 @@ import { User } from 'src/user/user.entity';
 import { Repository } from 'typeorm';
 import { DeleteProductDto } from './dto/delete-product.dto';
 import { EditProductDto } from './dto/edit-product.dto';
+import {
+  ProductDetailDto,
+  ProductDetailOutput,
+} from './dto/product-detail.dto';
 import { UploadProductDto } from './dto/upload-product.dto';
 import { Product, Progress } from './product.entity';
 
@@ -118,6 +122,28 @@ export class ProductService {
       await this.productRepo.save({ ...product, ...editProductDto });
       return {
         ok: true,
+      };
+    } catch (error) {
+      return {
+        error: 'Unexpected error',
+      };
+    }
+  }
+
+  async productDetail({
+    productId,
+  }: ProductDetailDto): Promise<ProductDetailOutput> {
+    try {
+      const product = await this.productRepo.findOne({ id: productId });
+      if (!product) {
+        return {
+          error: 'Product not found',
+        };
+      }
+
+      return {
+        ok: true,
+        product,
       };
     } catch (error) {
       return {

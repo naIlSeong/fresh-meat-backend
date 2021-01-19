@@ -1,9 +1,13 @@
-import { Args, Mutation, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CurrentUser } from 'src/auth/auth.decorator';
 import { CommonOutput } from 'src/common/common.dto';
 import { User } from 'src/user/user.entity';
 import { DeleteProductDto } from './dto/delete-product.dto';
 import { EditProductDto } from './dto/edit-product.dto';
+import {
+  ProductDetailDto,
+  ProductDetailOutput,
+} from './dto/product-detail.dto';
 import { UploadProductDto } from './dto/upload-product.dto';
 import { Product } from './product.entity';
 import { ProductService } from './product.service';
@@ -34,5 +38,12 @@ export class ProductResolver {
     @CurrentUser() user: User,
   ): Promise<CommonOutput> {
     return this.productService.editProduct(editProductDto, user);
+  }
+
+  @Query((returns) => ProductDetailOutput)
+  productDetail(
+    @Args('input') productDetailDto: ProductDetailDto,
+  ): Promise<ProductDetailOutput> {
+    return this.productService.productDetail(productDetailDto);
   }
 }

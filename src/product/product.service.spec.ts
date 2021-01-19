@@ -263,27 +263,34 @@ describe('ProductService', () => {
     it('Error : Product not found', async () => {
       productRepo.findOne.mockResolvedValue(null);
 
-      const result = await productService.productDetail(mockProduct.id);
+      const result = await productService.productDetail({
+        productId: mockProduct.id,
+      });
       expect(result).toEqual({
-        error: 'productDetail',
+        error: 'Product not found',
       });
     });
 
     it('Error : Unexpected Error', async () => {
       productRepo.findOne.mockRejectedValue(new Error());
 
-      const result = await productService.productDetail(mockProduct.id);
+      const result = await productService.productDetail({
+        productId: mockProduct.id,
+      });
       expect(result).toEqual({
-        error: 'Unexpected Error',
+        error: 'Unexpected error',
       });
     });
 
     it('Return product detail ID : 7', async () => {
       productRepo.findOne.mockResolvedValue({ id: mockProduct.id });
 
-      const result = await productService.productDetail(mockProduct.id);
+      const result = await productService.productDetail({
+        productId: mockProduct.id,
+      });
       expect(result).toEqual({
         ok: true,
+        product: { id: mockProduct.id },
       });
     });
   });
