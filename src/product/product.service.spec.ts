@@ -2,7 +2,7 @@ import { Test } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { User } from 'src/user/user.entity';
 import { Repository } from 'typeorm';
-import { Product } from './product.entity';
+import { Product, Progress } from './product.entity';
 import { ProductService } from './product.service';
 
 const mockRepo = () => ({
@@ -133,6 +133,23 @@ describe('ProductService', () => {
       });
     });
 
+    it("Error : Can't delete product", async () => {
+      productRepo.findOne.mockResolvedValue({
+        ...PRODUCT,
+        seller: mockUser,
+        sellerId: mockUser.id,
+        progress: Progress.Closed,
+      });
+
+      const result = await productService.deleteProduct(
+        { productId: PRODUCT.id },
+        mockUser,
+      );
+      expect(result).toEqual({
+        error: "Can't delete product",
+      });
+    });
+
     it('Error : Unexpected error', async () => {
       productRepo.findOne.mockRejectedValue(new Error());
 
@@ -150,6 +167,7 @@ describe('ProductService', () => {
         ...PRODUCT,
         seller: mockUser,
         sellerId: mockUser.id,
+        progress: Progress.Waiting,
       });
 
       const result = await productService.deleteProduct(

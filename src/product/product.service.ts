@@ -5,7 +5,7 @@ import { User } from 'src/user/user.entity';
 import { Repository } from 'typeorm';
 import { DeleteProductDto } from './dto/delete-product.dto';
 import { UploadProductDto } from './dto/upload-product.dto';
-import { Product } from './product.entity';
+import { Product, Progress } from './product.entity';
 
 @Injectable()
 export class ProductService {
@@ -60,6 +60,15 @@ export class ProductService {
       if (product.sellerId !== user.id) {
         return {
           error: 'Not your product',
+        };
+      }
+
+      if (
+        product.progress !== Progress.Waiting &&
+        product.progress !== Progress.Completed
+      ) {
+        return {
+          error: "Can't delete product",
         };
       }
 
