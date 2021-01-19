@@ -151,4 +151,68 @@ export class ProductService {
       };
     }
   }
+
+  async editProgress(
+    { productId, progress }: EditProductDto,
+    user: User,
+  ): Promise<CommonOutput> {
+    try {
+      const product = await this.productRepo.findOne({ id: productId });
+      if (!product) {
+        return {
+          error: 'Product not found',
+        };
+      }
+
+      if (product.sellerId !== user.id) {
+        return {
+          error: 'Not your product',
+        };
+      }
+
+      if (
+        product.progress === Progress.Waiting &&
+        progress !== Progress.InProgress
+      ) {
+        return {
+          error: "Can't edit progress",
+        };
+      }
+
+      if (
+        product.progress === Progress.InProgress &&
+        progress !== Progress.Closed
+      ) {
+        return {
+          error: "Can't edit progress",
+        };
+      }
+
+      if (product.progress === Progress.Closed && progress !== Progress.Paid) {
+        return {
+          error: "Can't edit progress",
+        };
+      }
+
+      if (
+        product.progress === Progress.Paid &&
+        progress !== Progress.Completed
+      ) {
+        return {
+          error: "Can't edit progress",
+        };
+      }
+
+      product.progress = progress;
+      await this.productRepo.save(product);
+
+      return {
+        ok: true,
+      };
+    } catch (error) {
+      return {
+        error: 'Unexpected error',
+      };
+    }
+  }
 }

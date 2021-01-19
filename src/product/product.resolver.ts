@@ -4,6 +4,7 @@ import { CommonOutput } from 'src/common/common.dto';
 import { User } from 'src/user/user.entity';
 import { DeleteProductDto } from './dto/delete-product.dto';
 import { EditProductDto } from './dto/edit-product.dto';
+import { EditProgressDto } from './dto/edit-progress.dto';
 import {
   ProductDetailDto,
   ProductDetailOutput,
@@ -45,5 +46,13 @@ export class ProductResolver {
     @Args('input') productDetailDto: ProductDetailDto,
   ): Promise<ProductDetailOutput> {
     return this.productService.productDetail(productDetailDto);
+  }
+
+  @Mutation((returns) => CommonOutput)
+  editProgress(
+    @Args('input') editProgressDto: EditProgressDto,
+    @CurrentUser() user: User,
+  ): Promise<CommonOutput> {
+    return this.productService.editProgress(editProgressDto, user);
   }
 }

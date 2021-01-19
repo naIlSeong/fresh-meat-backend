@@ -44,9 +44,9 @@
   - [x] Edit Product
   - [ ] Bid on Product
   - [x] Product Detail
-  - [ ] Edit Progress
+  - [x] Edit Progress
     - Waiting
-    - Under Auction
-    - Closed Auction (Waiting for payment)
+    - InProgress
+    - Closed (Waiting for payment)
     - Paid (Waiting for confirmation)
     - Completed
