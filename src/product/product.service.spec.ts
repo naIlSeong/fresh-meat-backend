@@ -178,6 +178,7 @@ describe('ProductService', () => {
 
   describe('editProduct', () => {
     const editProductArgs = {
+      productId: 7,
       productName: 'newProductName',
       description: 'newDescription',
       startPrice: 77777,
@@ -211,7 +212,7 @@ describe('ProductService', () => {
       });
     });
 
-    it("Error : Can't delete product", async () => {
+    it("Error : Can't edit product", async () => {
       productRepo.findOne.mockResolvedValue({
         ...mockProduct,
         seller: mockUser,
@@ -224,7 +225,7 @@ describe('ProductService', () => {
         mockUser,
       );
       expect(result).toEqual({
-        error: "Can't delete product",
+        error: "Can't edit product",
       });
     });
 

@@ -4,6 +4,7 @@ import { CommonOutput } from 'src/common/common.dto';
 import { User } from 'src/user/user.entity';
 import { Repository } from 'typeorm';
 import { DeleteProductDto } from './dto/delete-product.dto';
+import { EditProductDto } from './dto/edit-product.dto';
 import { UploadProductDto } from './dto/upload-product.dto';
 import { Product, Progress } from './product.entity';
 
@@ -74,6 +75,47 @@ export class ProductService {
 
       await this.productRepo.delete({ id: productId });
 
+      return {
+        ok: true,
+      };
+    } catch (error) {
+      return {
+        error: 'Unexpected error',
+      };
+    }
+  }
+
+  async editProduct(
+    editProductDto: EditProductDto,
+    user: User,
+  ): Promise<CommonOutput> {
+    try {
+      const product = await this.productRepo.findOne({
+        id: editProductDto.productId,
+      });
+
+      if (!product) {
+        return {
+          error: 'Product not found',
+        };
+      }
+
+      if (product.sellerId !== user.id) {
+        return {
+          error: 'Not your product',
+        };
+      }
+
+      if (
+        product.progress !== Progress.Waiting &&
+        product.progress !== Progress.Completed
+      ) {
+        return {
+          error: "Can't edit product",
+        };
+      }
+
+      await this.productRepo.save({ ...product, ...editProductDto });
       return {
         ok: true,
       };

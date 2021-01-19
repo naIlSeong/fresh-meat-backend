@@ -41,7 +41,7 @@
 - **Product Module**
   - [x] Upload Product
   - [x] Delete Product
-  - [ ] Edit Product
+  - [x] Edit Product
   - [ ] Bid on Product
   - [ ] Product Detail
   - [ ] Edit Progress

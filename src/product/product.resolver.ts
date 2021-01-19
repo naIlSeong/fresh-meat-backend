@@ -3,6 +3,7 @@ import { CurrentUser } from 'src/auth/auth.decorator';
 import { CommonOutput } from 'src/common/common.dto';
 import { User } from 'src/user/user.entity';
 import { DeleteProductDto } from './dto/delete-product.dto';
+import { EditProductDto } from './dto/edit-product.dto';
 import { UploadProductDto } from './dto/upload-product.dto';
 import { Product } from './product.entity';
 import { ProductService } from './product.service';
@@ -25,5 +26,13 @@ export class ProductResolver {
     @CurrentUser() user: User,
   ): Promise<CommonOutput> {
     return this.productService.deleteProduct(deleteProductDto, user);
+  }
+
+  @Mutation((returns) => CommonOutput)
+  editProduct(
+    @Args('input') editProductDto: EditProductDto,
+    @CurrentUser() user: User,
+  ): Promise<CommonOutput> {
+    return this.productService.editProduct(editProductDto, user);
   }
 }
