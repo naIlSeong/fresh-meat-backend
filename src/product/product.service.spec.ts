@@ -294,4 +294,155 @@ describe('ProductService', () => {
       });
     });
   });
+
+  describe('editProgress', () => {
+    it('Error : Product not found', async () => {
+      productRepo.findOne.mockResolvedValue(null);
+
+      const result = await productService.editProgress(
+        {
+          productId: mockProduct.id,
+          progress: Progress.InProgress,
+        },
+        mockUser,
+      );
+      expect(result).toEqual({
+        error: 'Product not found',
+      });
+    });
+
+    it('Error : Not your product', async () => {
+      productRepo.findOne.mockResolvedValue({
+        ...mockProduct,
+        seller: otherUser,
+        sellerId: otherUser.id,
+      });
+
+      const result = await productService.editProgress(
+        {
+          productId: mockProduct.id,
+          progress: Progress.InProgress,
+        },
+        mockUser,
+      );
+      expect(result).toEqual({
+        error: 'Not your product',
+      });
+    });
+
+    it("Error : Can't edit progress", async () => {
+      productRepo.findOne.mockResolvedValue({
+        ...mockProduct,
+        seller: mockUser,
+        sellerId: mockUser.id,
+        progress: Progress.Waiting,
+      });
+
+      const result = await productService.editProgress(
+        {
+          productId: mockProduct.id,
+          progress: Progress.Closed,
+        },
+        mockUser,
+      );
+      expect(result).toEqual({
+        error: "Can't edit progress",
+      });
+    });
+
+    it('Error : Unexpected error', async () => {
+      productRepo.findOne.mockRejectedValue(new Error());
+
+      const result = await productService.editProgress(
+        {
+          productId: mockProduct.id,
+          progress: Progress.InProgress,
+        },
+        mockUser,
+      );
+      expect(result).toEqual({
+        error: 'Unexpected error',
+      });
+    });
+
+    it('Edit progress : Waiting -> InProgress', async () => {
+      productRepo.findOne.mockResolvedValue({
+        ...mockProduct,
+        seller: mockUser,
+        sellerId: mockUser.id,
+        progress: Progress.Waiting,
+      });
+
+      const result = await productService.editProgress(
+        {
+          productId: mockProduct.id,
+          progress: Progress.InProgress,
+        },
+        mockUser,
+      );
+      expect(result).toEqual({
+        ok: true,
+      });
+    });
+
+    it('Edit progress : InProgress -> Closed', async () => {
+      productRepo.findOne.mockResolvedValue({
+        ...mockProduct,
+        seller: mockUser,
+        sellerId: mockUser.id,
+        progress: Progress.InProgress,
+      });
+
+      const result = await productService.editProgress(
+        {
+          productId: mockProduct.id,
+          progress: Progress.Closed,
+        },
+        mockUser,
+      );
+      expect(result).toEqual({
+        ok: true,
+      });
+    });
+
+    it('Edit progress : Closed -> Paid', async () => {
+      productRepo.findOne.mockResolvedValue({
+        ...mockProduct,
+        seller: mockUser,
+        sellerId: mockUser.id,
+        progress: Progress.Closed,
+      });
+
+      const result = await productService.editProgress(
+        {
+          productId: mockProduct.id,
+          progress: Progress.Paid,
+        },
+        mockUser,
+      );
+      expect(result).toEqual({
+        ok: true,
+      });
+    });
+
+    it('Edit progress : Paid -> Completed', async () => {
+      productRepo.findOne.mockResolvedValue({
+        ...mockProduct,
+        seller: mockUser,
+        sellerId: mockUser.id,
+        progress: Progress.Paid,
+      });
+
+      const result = await productService.editProgress(
+        {
+          productId: mockProduct.id,
+          progress: Progress.Completed,
+        },
+        mockUser,
+      );
+      expect(result).toEqual({
+        ok: true,
+      });
+    });
+  });
 });
