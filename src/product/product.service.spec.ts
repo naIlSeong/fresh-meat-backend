@@ -104,39 +104,59 @@ describe('ProductService', () => {
     let PRODUCT: Product;
     PRODUCT = new Product();
     PRODUCT.id = 9;
-    PRODUCT.seller = mockUser;
+    // PRODUCT.sellerId = mockUser.id;
 
-    it.todo('Error : Product not found', async () => {
+    it('Error : Product not found', async () => {
       productRepo.findOne.mockResolvedValue(null);
 
-      const result = await productService({ productId: PRODUCT.id }, mockUser);
+      const result = await productService.deleteProduct(
+        { productId: PRODUCT.id },
+        mockUser,
+      );
       expect(result).toEqual({
         error: 'Product not found',
       });
     });
 
-    it.todo('Error : Not your product', async () => {
-      productRepo.findOne.mockResolvedValue(PRODUCT);
+    it('Error : Not your product', async () => {
+      productRepo.findOne.mockResolvedValue({
+        ...PRODUCT,
+        seller: USER,
+        sellerId: USER.id,
+      });
 
-      const result = await productService({ productId: PRODUCT.id }, USER);
+      const result = await productService.deleteProduct(
+        { productId: PRODUCT.id },
+        mockUser,
+      );
       expect(result).toEqual({
         error: 'Not your product',
       });
     });
 
-    it.todo('Error : Unexpected error', async () => {
+    it('Error : Unexpected error', async () => {
       productRepo.findOne.mockRejectedValue(new Error());
 
-      const result = await productService({ productId: PRODUCT.id }, mockUser);
+      const result = await productService.deleteProduct(
+        { productId: PRODUCT.id },
+        mockUser,
+      );
       expect(result).toEqual({
         error: 'Unexpected error',
       });
     });
 
-    it.todo('Delete product ID : 9', async () => {
-      productRepo.findOne.mockResolvedValue(PRODUCT);
+    it('Delete product ID : 9', async () => {
+      productRepo.findOne.mockResolvedValue({
+        ...PRODUCT,
+        seller: mockUser,
+        sellerId: mockUser.id,
+      });
 
-      const result = await productService({ productId: PRODUCT.id }, mockUser);
+      const result = await productService.deleteProduct(
+        { productId: PRODUCT.id },
+        mockUser,
+      );
       expect(result).toEqual({
         ok: true,
       });

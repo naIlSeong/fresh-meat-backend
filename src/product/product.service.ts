@@ -57,8 +57,6 @@ export class ProductService {
         };
       }
 
-      console.log(product.sellerId);
-      console.log(user.id);
       if (product.sellerId !== user.id) {
         return {
           error: 'Not your product',
@@ -68,10 +66,9 @@ export class ProductService {
       await this.productRepo.delete({ id: productId });
 
       return {
-        ok: false,
+        ok: true,
       };
     } catch (error) {
-      console.log(error);
       return {
         error: 'Unexpected error',
       };
