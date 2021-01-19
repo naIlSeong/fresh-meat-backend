@@ -18,6 +18,7 @@ describe('ProductService', () => {
   let productService: ProductService;
   let productRepo: MockRepo<Product>;
   let mockUser: User;
+  let otherUser: User;
   let mockProduct: Product;
 
   beforeEach(async () => {
@@ -37,9 +38,11 @@ describe('ProductService', () => {
     mockUser = new User();
     mockUser.id = 3;
 
+    otherUser = new User();
+    otherUser.id = 8;
+
     mockProduct = new Product();
     mockProduct.id = 7;
-    mockProduct.seller = mockUser;
     mockProduct.productName = 'mockProductName';
     mockProduct.startPrice = 1000;
   });
@@ -97,19 +100,11 @@ describe('ProductService', () => {
   });
 
   describe('deleteProduct', () => {
-    let USER: User;
-    USER = new User();
-    USER.id = 8;
-
-    let PRODUCT: Product;
-    PRODUCT = new Product();
-    PRODUCT.id = 9;
-
     it('Error : Product not found', async () => {
       productRepo.findOne.mockResolvedValue(null);
 
       const result = await productService.deleteProduct(
-        { productId: PRODUCT.id },
+        { productId: mockProduct.id },
         mockUser,
       );
       expect(result).toEqual({
@@ -119,13 +114,13 @@ describe('ProductService', () => {
 
     it('Error : Not your product', async () => {
       productRepo.findOne.mockResolvedValue({
-        ...PRODUCT,
-        seller: USER,
-        sellerId: USER.id,
+        ...mockProduct,
+        seller: otherUser,
+        sellerId: otherUser.id,
       });
 
       const result = await productService.deleteProduct(
-        { productId: PRODUCT.id },
+        { productId: mockProduct.id },
         mockUser,
       );
       expect(result).toEqual({
@@ -135,14 +130,14 @@ describe('ProductService', () => {
 
     it("Error : Can't delete product", async () => {
       productRepo.findOne.mockResolvedValue({
-        ...PRODUCT,
+        ...mockProduct,
         seller: mockUser,
         sellerId: mockUser.id,
         progress: Progress.Closed,
       });
 
       const result = await productService.deleteProduct(
-        { productId: PRODUCT.id },
+        { productId: mockProduct.id },
         mockUser,
       );
       expect(result).toEqual({
@@ -154,7 +149,7 @@ describe('ProductService', () => {
       productRepo.findOne.mockRejectedValue(new Error());
 
       const result = await productService.deleteProduct(
-        { productId: PRODUCT.id },
+        { productId: mockProduct.id },
         mockUser,
       );
       expect(result).toEqual({
@@ -164,20 +159,102 @@ describe('ProductService', () => {
 
     it('Delete product ID : 9', async () => {
       productRepo.findOne.mockResolvedValue({
-        ...PRODUCT,
+        ...mockProduct,
         seller: mockUser,
         sellerId: mockUser.id,
         progress: Progress.Waiting,
       });
 
       const result = await productService.deleteProduct(
-        { productId: PRODUCT.id },
+        { productId: mockProduct.id },
         mockUser,
       );
       expect(result).toEqual({
         ok: true,
       });
       expect(productRepo.delete).toBeCalled();
+    });
+  });
+
+  describe('editProduct', () => {
+    const editProductArgs = {
+      productName: 'newProductName',
+      description: 'newDescription',
+      startPrice: 77777,
+    };
+
+    it('Error : Product not found', async () => {
+      productRepo.findOne.mockResolvedValue(null);
+
+      const result = await productService.editProduct(
+        editProductArgs,
+        mockUser,
+      );
+      expect(result).toEqual({
+        error: 'Product not found',
+      });
+    });
+
+    it('Error : Not your product', async () => {
+      productRepo.findOne.mockResolvedValue({
+        ...mockProduct,
+        seller: otherUser,
+        sellerId: otherUser.id,
+      });
+
+      const result = await productService.editProduct(
+        editProductArgs,
+        mockUser,
+      );
+      expect(result).toEqual({
+        error: 'Not your product',
+      });
+    });
+
+    it("Error : Can't delete product", async () => {
+      productRepo.findOne.mockResolvedValue({
+        ...mockProduct,
+        seller: mockUser,
+        sellerId: mockUser.id,
+        progress: Progress.InProgress,
+      });
+
+      const result = await productService.editProduct(
+        editProductArgs,
+        mockUser,
+      );
+      expect(result).toEqual({
+        error: "Can't delete product",
+      });
+    });
+
+    it('Error : Unexpected error', async () => {
+      productRepo.findOne.mockRejectedValue(new Error());
+
+      const result = await productService.editProduct(
+        editProductArgs,
+        mockUser,
+      );
+      expect(result).toEqual({
+        error: 'Unexpected error',
+      });
+    });
+
+    it('Edit product', async () => {
+      productRepo.findOne.mockResolvedValue({
+        ...mockProduct,
+        seller: mockUser,
+        sellerId: mockUser.id,
+        progress: Progress.Waiting,
+      });
+
+      const result = await productService.editProduct(
+        editProductArgs,
+        mockUser,
+      );
+      expect(result).toEqual({
+        ok: true,
+      });
     });
   });
 });
