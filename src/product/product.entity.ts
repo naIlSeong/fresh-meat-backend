@@ -1,8 +1,23 @@
-import { Field, InputType, ObjectType } from '@nestjs/graphql';
-import { IsDateString, IsNumber, IsString } from 'class-validator';
+import {
+  Field,
+  InputType,
+  ObjectType,
+  registerEnumType,
+} from '@nestjs/graphql';
+import { IsDateString, IsEnum, IsNumber, IsString } from 'class-validator';
 import { CommonEntity } from 'src/common/common.entity';
 import { User } from 'src/user/user.entity';
 import { Column, Entity, ManyToOne, RelationId } from 'typeorm';
+
+export enum Progress {
+  Waiting = 'Waiting',
+  InProgress = 'InProgress',
+  Closed = 'Closed',
+  Paid = 'Paid',
+  Completed = 'Completed',
+}
+
+registerEnumType(Progress, { name: 'Progress' });
 
 @InputType({ isAbstract: true })
 @ObjectType()
@@ -46,4 +61,9 @@ export class Product extends CommonEntity {
   @Field((type) => Date, { nullable: true })
   @IsDateString()
   remainingTime?: Date;
+
+  @Column({ type: 'enum', enum: Progress, default: Progress.Waiting })
+  @Field((type) => Progress)
+  @IsEnum(Progress)
+  progress: Progress;
 }

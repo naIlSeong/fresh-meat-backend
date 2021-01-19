@@ -104,7 +104,6 @@ describe('ProductService', () => {
     let PRODUCT: Product;
     PRODUCT = new Product();
     PRODUCT.id = 9;
-    // PRODUCT.sellerId = mockUser.id;
 
     it('Error : Product not found', async () => {
       productRepo.findOne.mockResolvedValue(null);

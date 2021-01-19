@@ -23,6 +23,7 @@
   - Start price
   - Bid price
   - Remaining time
+  - Progress (enum)
 
 ---
 
@@ -39,7 +40,7 @@
 
 - **Product Module**
   - [x] Upload Product
-  - [ ] Delete Product
+  - [x] Delete Product
   - [ ] Edit Product
   - [ ] Bid on Product
   - [ ] Product Detail
