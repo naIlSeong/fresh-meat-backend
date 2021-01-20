@@ -44,7 +44,7 @@
   - [x] Edit Product
   - [ ] Bid on Product
     - [x] Create Bidding
-    - [ ] Update Bidding
+    - [x] Update Bidding
     - [ ] Finish Bidding
   - [x] Product Detail
   - [x] Edit Progress
