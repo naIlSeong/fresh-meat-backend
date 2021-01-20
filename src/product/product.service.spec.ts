@@ -529,4 +529,80 @@ describe('ProductService', () => {
       });
     });
   });
+
+  describe('updateBidding', () => {
+    mockProduct.bidPrice = 12345;
+
+    it('Error : Product not found', async () => {
+      productRepo.findOne.mockResolvedValue(null);
+
+      const result = await productService.updateBidding(
+        { productId: mockProduct.id, bidPrice: 23456 },
+        mockUser,
+      );
+      expect(result).toEqual({
+        error: 'Product not found',
+      });
+    });
+
+    it("Error : Can't bid on your product", async () => {
+      productRepo.findOne.mockResolvedValue({
+        id: mockProduct.id,
+        sellerId: otherUser.id,
+      });
+
+      const result = await productService.updateBidding(
+        { productId: mockProduct.id, bidPrice: 23456 },
+        mockUser,
+      );
+      expect(result).toEqual({
+        error: "Can't bid on your product",
+      });
+    });
+
+    it("Error : Can't update bidding", async () => {
+      productRepo.findOne.mockResolvedValue({
+        id: mockProduct.id,
+        sellerId: mockUser.id,
+        progress: Progress.Waiting,
+      });
+
+      const result = await productService.updateBidding(
+        { productId: mockProduct.id, bidPrice: 23456 },
+        mockUser,
+      );
+      expect(result).toEqual({
+        error: "Can't update bidding",
+      });
+    });
+
+    it('Error : Unexpected error', async () => {
+      productRepo.findOne.mockRejectedValue(new Error());
+
+      const result = await productService.updateBidding(
+        { productId: mockProduct.id, bidPrice: 23456 },
+        mockUser,
+      );
+      expect(result).toEqual({
+        error: 'Unexpected error',
+      });
+    });
+
+    it('Update bidding & remaining time', async () => {
+      productRepo.findOne.mockResolvedValue({
+        id: mockProduct.id,
+        sellerId: mockUser.id,
+        progress: Progress.InProgress,
+        bidPrice: mockProduct.bidPrice,
+      });
+
+      const result = await productService.updateBidding(
+        { productId: mockProduct.id, bidPrice: 23456 },
+        mockUser,
+      );
+      expect(result).toEqual({
+        error: "Can't update bidding",
+      });
+    });
+  });
 });
