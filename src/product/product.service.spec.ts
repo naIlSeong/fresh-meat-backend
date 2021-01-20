@@ -531,8 +531,6 @@ describe('ProductService', () => {
   });
 
   describe('updateBidding', () => {
-    mockProduct.bidPrice = 12345;
-
     it('Error : Product not found', async () => {
       productRepo.findOne.mockResolvedValue(null);
 
@@ -548,7 +546,8 @@ describe('ProductService', () => {
     it("Error : Can't bid on your product", async () => {
       productRepo.findOne.mockResolvedValue({
         id: mockProduct.id,
-        sellerId: otherUser.id,
+        sellerId: mockUser.id,
+        bidPrice: 12345,
       });
 
       const result = await productService.updateBidding(
@@ -563,7 +562,8 @@ describe('ProductService', () => {
     it("Error : Can't update bidding", async () => {
       productRepo.findOne.mockResolvedValue({
         id: mockProduct.id,
-        sellerId: mockUser.id,
+        sellerId: otherUser.id,
+        bidPrice: 12345,
         progress: Progress.Waiting,
       });
 
@@ -573,6 +573,42 @@ describe('ProductService', () => {
       );
       expect(result).toEqual({
         error: "Can't update bidding",
+      });
+    });
+
+    it('Error : Already bid on product', async () => {
+      productRepo.findOne.mockResolvedValue({
+        id: mockProduct.id,
+        sellerId: otherUser.id,
+        bidderId: mockUser.id,
+        bidPrice: 12345,
+        progress: Progress.InProgress,
+      });
+
+      const result = await productService.updateBidding(
+        { productId: mockProduct.id, bidPrice: 23456 },
+        mockUser,
+      );
+      expect(result).toEqual({
+        error: 'Already bid on product',
+      });
+    });
+
+    it('Error : Bid price must be more than', async () => {
+      productRepo.findOne.mockResolvedValue({
+        id: mockProduct.id,
+        sellerId: otherUser.id,
+        bidderId: 11,
+        bidPrice: 12345,
+        progress: Progress.InProgress,
+      });
+
+      const result = await productService.updateBidding(
+        { productId: mockProduct.id, bidPrice: 1234 },
+        mockUser,
+      );
+      expect(result).toEqual({
+        error: 'Bid price must be more than 12345',
       });
     });
 
@@ -591,9 +627,10 @@ describe('ProductService', () => {
     it('Update bidding & remaining time', async () => {
       productRepo.findOne.mockResolvedValue({
         id: mockProduct.id,
-        sellerId: mockUser.id,
+        sellerId: otherUser.id,
+        bidderId: 11,
+        bidPrice: 12345,
         progress: Progress.InProgress,
-        bidPrice: mockProduct.bidPrice,
       });
 
       const result = await productService.updateBidding(
@@ -601,7 +638,7 @@ describe('ProductService', () => {
         mockUser,
       );
       expect(result).toEqual({
-        error: "Can't update bidding",
+        ok: true,
       });
     });
   });
