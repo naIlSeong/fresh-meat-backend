@@ -481,7 +481,7 @@ describe('ProductService', () => {
     it("Error : Can't create bidding", async () => {
       productRepo.findOne.mockResolvedValue({
         id: mockProduct.id,
-        sellerId: mockUser.id,
+        sellerId: otherUser.id,
         progress: Progress.InProgress,
       });
 
@@ -514,7 +514,7 @@ describe('ProductService', () => {
       productRepo.findOne.mockResolvedValue({
         id: mockProduct.id,
         startPrice: 777,
-        sellerId: mockUser.id,
+        sellerId: otherUser.id,
         progress: Progress.Waiting,
       });
 

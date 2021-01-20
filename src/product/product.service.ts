@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CommonOutput } from 'src/common/common.dto';
 import { User } from 'src/user/user.entity';
 import { Repository } from 'typeorm';
+import { CreateBiddingDto } from './dto/create-bidding.dto';
 import { DeleteProductDto } from './dto/delete-product.dto';
 import { EditProductDto } from './dto/edit-product.dto';
 import {
@@ -204,6 +205,47 @@ export class ProductService {
       }
 
       product.progress = progress;
+      await this.productRepo.save(product);
+
+      return {
+        ok: true,
+      };
+    } catch (error) {
+      return {
+        error: 'Unexpected error',
+      };
+    }
+  }
+
+  async createBidding(
+    { productId }: CreateBiddingDto,
+    user: User,
+  ): Promise<CommonOutput> {
+    try {
+      const product = await this.productRepo.findOne({ id: productId });
+      if (!product) {
+        return {
+          error: 'Product not found',
+        };
+      }
+
+      if (product.sellerId === user.id) {
+        return {
+          error: "Can't bid on your product",
+        };
+      }
+
+      if (product.progress !== Progress.Waiting) {
+        return {
+          error: "Can't create bidding",
+        };
+      }
+
+      product.bidder = user;
+      product.bidPrice = product.startPrice;
+      product.progress = Progress.InProgress;
+      product.remainingTime = new Date(new Date().valueOf() + 600000);
+
       await this.productRepo.save(product);
 
       return {

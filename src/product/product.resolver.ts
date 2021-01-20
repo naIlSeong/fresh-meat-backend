@@ -2,6 +2,7 @@ import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CurrentUser } from 'src/auth/auth.decorator';
 import { CommonOutput } from 'src/common/common.dto';
 import { User } from 'src/user/user.entity';
+import { CreateBiddingDto } from './dto/create-bidding.dto';
 import { DeleteProductDto } from './dto/delete-product.dto';
 import { EditProductDto } from './dto/edit-product.dto';
 import { EditProgressDto } from './dto/edit-progress.dto';
@@ -54,5 +55,13 @@ export class ProductResolver {
     @CurrentUser() user: User,
   ): Promise<CommonOutput> {
     return this.productService.editProgress(editProgressDto, user);
+  }
+
+  @Mutation((returns) => CommonOutput)
+  createBidding(
+    @Args('input') createBiddingDto: CreateBiddingDto,
+    @CurrentUser() user: User,
+  ): Promise<CommonOutput> {
+    return this.productService.createBidding(createBiddingDto, user);
   }
 }

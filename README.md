@@ -43,9 +43,9 @@
   - [x] Delete Product
   - [x] Edit Product
   - [ ] Bid on Product
-    - Create Bidding
-    - Update Bidding
-    - Finish Bidding
+    - [x] Create Bidding
+    - [ ] Update Bidding
+    - [ ] Finish Bidding
   - [x] Product Detail
   - [x] Edit Progress
     - Waiting
