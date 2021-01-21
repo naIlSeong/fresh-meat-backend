@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { SchedulerRegistry } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CommonOutput } from 'src/common/common.dto';
 import { User } from 'src/user/user.entity';
@@ -19,6 +20,7 @@ export class ProductService {
   constructor(
     @InjectRepository(Product)
     private readonly productRepo: Repository<Product>,
+    private schedulerRegistry: SchedulerRegistry,
   ) {}
 
   async uploadProduct(
@@ -248,6 +250,7 @@ export class ProductService {
       product.remainingTime = new Date(new Date().valueOf() + 600000);
 
       await this.productRepo.save(product);
+      this.createTimer(product);
 
       return {
         ok: true,
@@ -300,14 +303,44 @@ export class ProductService {
       product.remainingTime = new Date(new Date().valueOf() + 600000);
 
       await this.productRepo.save(product);
+      this.updateTimer(product);
 
       return {
         ok: true,
       };
     } catch (error) {
+      console.log(error);
       return {
         error: 'Unexpected error',
       };
     }
+  }
+
+  createTimer(product: Product) {
+    this.schedulerRegistry.addTimeout(
+      'createdTimer',
+      setTimeout(async () => {
+        product.progress = Progress.Closed;
+        await this.productRepo.save(product);
+      }, 600000),
+    );
+    const timers = this.schedulerRegistry.getTimeouts();
+    timers.forEach((key) => console.log(`Timer : ${key}`));
+  }
+
+  updateTimer(product: Product) {
+    const timers = this.schedulerRegistry.getTimeouts();
+    timers.forEach((key) => {
+      this.schedulerRegistry.deleteTimeout(`${key}`);
+    });
+
+    this.schedulerRegistry.addTimeout(
+      'updatedTimer',
+      setTimeout(async () => {
+        product.progress = Progress.Closed;
+        await this.productRepo.save(product);
+      }, 600000),
+    );
+    timers.forEach((key) => console.log(`Timer : ${key}`));
   }
 }

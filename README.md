@@ -42,10 +42,10 @@
   - [x] Upload Product
   - [x] Delete Product
   - [x] Edit Product
-  - [ ] Bid on Product
+  - [x] Bid on Product
     - [x] Create Bidding
     - [x] Update Bidding
-    - [ ] Finish Bidding
+    - [x] Finish Bidding
   - [x] Product Detail
   - [x] Edit Progress
     - Waiting
