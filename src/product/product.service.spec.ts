@@ -45,6 +45,12 @@ describe('ProductService', () => {
     mockProduct.id = 7;
     mockProduct.productName = 'mockProductName';
     mockProduct.startPrice = 1000;
+
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.clearAllTimers();
   });
 
   describe('uploadProduct', () => {
@@ -527,6 +533,8 @@ describe('ProductService', () => {
       expect(result).toEqual({
         ok: true,
       });
+      expect(setTimeout).toHaveBeenCalledTimes(1);
+      expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 600000);
     });
   });
 
@@ -640,6 +648,8 @@ describe('ProductService', () => {
       expect(result).toEqual({
         ok: true,
       });
+      expect(setTimeout).toHaveBeenCalledTimes(1);
+      expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 600000);
     });
   });
 });
