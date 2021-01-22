@@ -1,3 +1,4 @@
+import { SchedulerRegistry } from '@nestjs/schedule';
 import { Test } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { User } from 'src/user/user.entity';
@@ -12,7 +13,15 @@ const mockRepo = () => ({
   delete: jest.fn(),
 });
 
+const mockSchedulerRegistry = () => ({
+  addTimeout: jest.fn(),
+  getTimeouts: jest.fn(),
+  deleteTimeout: jest.fn(),
+});
+
 type MockRepo<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
+
+type MockScheduler<T = any> = Record<keyof T, jest.Mock>;
 
 describe('ProductService', () => {
   let productService: ProductService;
@@ -20,6 +29,8 @@ describe('ProductService', () => {
   let mockUser: User;
   let otherUser: User;
   let mockProduct: Product;
+
+  let schedulerRegistry: MockScheduler<SchedulerRegistry>;
 
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -29,11 +40,16 @@ describe('ProductService', () => {
           provide: getRepositoryToken(Product),
           useValue: mockRepo(),
         },
+        {
+          provide: SchedulerRegistry,
+          useValue: mockSchedulerRegistry(),
+        },
       ],
     }).compile();
 
     productService = moduleRef.get<ProductService>(ProductService);
     productRepo = moduleRef.get(getRepositoryToken(Product));
+    schedulerRegistry = moduleRef.get(SchedulerRegistry);
 
     mockUser = new User();
     mockUser.id = 3;
@@ -45,12 +61,6 @@ describe('ProductService', () => {
     mockProduct.id = 7;
     mockProduct.productName = 'mockProductName';
     mockProduct.startPrice = 1000;
-
-    jest.useFakeTimers();
-  });
-
-  afterEach(() => {
-    jest.clearAllTimers();
   });
 
   describe('uploadProduct', () => {
@@ -533,8 +543,6 @@ describe('ProductService', () => {
       expect(result).toEqual({
         ok: true,
       });
-      expect(setTimeout).toHaveBeenCalledTimes(1);
-      expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 600000);
     });
   });
 
@@ -641,6 +649,8 @@ describe('ProductService', () => {
         progress: Progress.InProgress,
       });
 
+      schedulerRegistry.getTimeouts.mockReturnValue(['createdTimer']);
+
       const result = await productService.updateBidding(
         { productId: mockProduct.id, bidPrice: 23456 },
         mockUser,
@@ -648,8 +658,6 @@ describe('ProductService', () => {
       expect(result).toEqual({
         ok: true,
       });
-      expect(setTimeout).toHaveBeenCalledTimes(1);
-      expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 600000);
     });
   });
 });

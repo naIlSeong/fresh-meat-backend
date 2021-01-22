@@ -309,7 +309,6 @@ export class ProductService {
         ok: true,
       };
     } catch (error) {
-      console.log(error);
       return {
         error: 'Unexpected error',
       };
@@ -324,8 +323,6 @@ export class ProductService {
         await this.productRepo.save(product);
       }, 600000),
     );
-    const timers = this.schedulerRegistry.getTimeouts();
-    timers.forEach((key) => console.log(`Timer : ${key}`));
   }
 
   updateTimer(product: Product) {
@@ -341,6 +338,5 @@ export class ProductService {
         await this.productRepo.save(product);
       }, 600000),
     );
-    timers.forEach((key) => console.log(`Timer : ${key}`));
   }
 }
