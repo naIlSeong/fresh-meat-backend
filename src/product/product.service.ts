@@ -11,7 +11,6 @@ import {
   ProductDetailDto,
   ProductDetailOutput,
 } from './dto/product-detail.dto';
-import { UpdateBiddingDto } from './dto/update-bidding.dto';
 import { UploadProductDto } from './dto/upload-product.dto';
 import { Product, Progress } from './product.entity';
 
@@ -221,7 +220,7 @@ export class ProductService {
   }
 
   async createBidding(
-    { productId }: CreateBiddingDto,
+    { productId, bidPrice }: CreateBiddingDto,
     user: User,
   ): Promise<CommonOutput> {
     try {
@@ -231,79 +230,46 @@ export class ProductService {
           error: 'Product not found',
         };
       }
-
       if (product.sellerId === user.id) {
         return {
           error: "Can't bid on your product",
         };
       }
-
-      if (product.progress !== Progress.Waiting) {
+      if (
+        product.progress !== Progress.Waiting &&
+        product.progress !== Progress.InProgress
+      ) {
         return {
-          error: "Can't create bidding",
+          error: 'The auction has already closed',
         };
       }
 
+      // Create
+      if (product.progress === Progress.Waiting) {
+        this.createTimer(product);
+      }
+      // Update
+      if (bidPrice) {
+        if (product.bidderId === user.id) {
+          return {
+            error: 'Already bid on product',
+          };
+        }
+
+        if (product.bidPrice >= bidPrice) {
+          return {
+            error: `Bid price must be more than ${product.bidPrice}`,
+          };
+        }
+        this.updateTimer(product);
+      }
+
       product.bidder = user;
-      product.bidPrice = product.startPrice;
+      product.bidPrice = bidPrice ? bidPrice : product.startPrice;
+      product.remainingTime = new Date(new Date().valueOf() + 600000);
       product.progress = Progress.InProgress;
-      product.remainingTime = new Date(new Date().valueOf() + 600000);
 
       await this.productRepo.save(product);
-      this.createTimer(product);
-
-      return {
-        ok: true,
-      };
-    } catch (error) {
-      return {
-        error: 'Unexpected error',
-      };
-    }
-  }
-
-  async updateBidding(
-    { productId, bidPrice }: UpdateBiddingDto,
-    user: User,
-  ): Promise<CommonOutput> {
-    try {
-      const product = await this.productRepo.findOne({ id: productId });
-      if (!product) {
-        return {
-          error: 'Product not found',
-        };
-      }
-
-      if (product.sellerId === user.id) {
-        return {
-          error: "Can't bid on your product",
-        };
-      }
-
-      if (product.progress !== Progress.InProgress) {
-        return {
-          error: "Can't update bidding",
-        };
-      }
-
-      if (product.bidderId === user.id) {
-        return {
-          error: 'Already bid on product',
-        };
-      }
-
-      if (product.bidPrice >= bidPrice) {
-        return {
-          error: `Bid price must be more than ${product.bidPrice}`,
-        };
-      }
-
-      product.bidder = user;
-      product.bidPrice = bidPrice;
-      product.remainingTime = new Date(new Date().valueOf() + 600000);
-
-      await this.productRepo.save(product);
-      this.updateTimer(product);
 
       return {
         ok: true,
