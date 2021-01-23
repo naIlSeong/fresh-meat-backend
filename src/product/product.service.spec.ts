@@ -1,7 +1,6 @@
 import { SchedulerRegistry } from '@nestjs/schedule';
 import { Test } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { resolve } from 'path';
 import { User } from 'src/user/user.entity';
 import { Repository } from 'typeorm';
 import { Product, Progress } from './product.entity';
@@ -319,10 +318,7 @@ describe('ProductService', () => {
       productRepo.findOne.mockResolvedValue(null);
 
       const result = await productService.editProgress(
-        {
-          productId: mockProduct.id,
-          progress: Progress.InProgress,
-        },
+        { productId: mockProduct.id },
         mockUser,
       );
       expect(result).toEqual({
@@ -330,39 +326,36 @@ describe('ProductService', () => {
       });
     });
 
-    it('Error : Not your product', async () => {
-      productRepo.findOne.mockResolvedValue({
-        ...mockProduct,
-        seller: otherUser,
-        sellerId: otherUser.id,
-      });
-
-      const result = await productService.editProgress(
-        {
-          productId: mockProduct.id,
-          progress: Progress.InProgress,
-        },
-        mockUser,
-      );
-      expect(result).toEqual({
-        error: 'Not your product',
-      });
-    });
-
-    it("Error : Can't edit progress", async () => {
+    it("Error : Can't edit progress (Paid)", async () => {
       productRepo.findOne.mockResolvedValue({
         ...mockProduct,
         seller: mockUser,
         sellerId: mockUser.id,
-        progress: Progress.Waiting,
+        bidderId: otherUser,
+        progress: Progress.Closed,
       });
 
       const result = await productService.editProgress(
-        {
-          productId: mockProduct.id,
-          progress: Progress.Closed,
-        },
+        { productId: mockProduct.id },
         mockUser,
+      );
+      expect(result).toEqual({
+        error: "Can't edit progress",
+      });
+    });
+
+    it("Error : Can't edit progress (Completed)", async () => {
+      productRepo.findOne.mockResolvedValue({
+        ...mockProduct,
+        seller: mockUser,
+        sellerId: mockUser.id,
+        bidderId: otherUser,
+        progress: Progress.Paid,
+      });
+
+      const result = await productService.editProgress(
+        { productId: mockProduct.id },
+        otherUser,
       );
       expect(result).toEqual({
         error: "Can't edit progress",
@@ -373,54 +366,11 @@ describe('ProductService', () => {
       productRepo.findOne.mockRejectedValue(new Error());
 
       const result = await productService.editProgress(
-        {
-          productId: mockProduct.id,
-          progress: Progress.InProgress,
-        },
+        { productId: mockProduct.id },
         mockUser,
       );
       expect(result).toEqual({
         error: 'Unexpected error',
-      });
-    });
-
-    it('Edit progress : Waiting -> InProgress', async () => {
-      productRepo.findOne.mockResolvedValue({
-        ...mockProduct,
-        seller: mockUser,
-        sellerId: mockUser.id,
-        progress: Progress.Waiting,
-      });
-
-      const result = await productService.editProgress(
-        {
-          productId: mockProduct.id,
-          progress: Progress.InProgress,
-        },
-        mockUser,
-      );
-      expect(result).toEqual({
-        ok: true,
-      });
-    });
-
-    it('Edit progress : InProgress -> Closed', async () => {
-      productRepo.findOne.mockResolvedValue({
-        ...mockProduct,
-        seller: mockUser,
-        sellerId: mockUser.id,
-        progress: Progress.InProgress,
-      });
-
-      const result = await productService.editProgress(
-        {
-          productId: mockProduct.id,
-          progress: Progress.Closed,
-        },
-        mockUser,
-      );
-      expect(result).toEqual({
-        ok: true,
       });
     });
 
@@ -429,15 +379,13 @@ describe('ProductService', () => {
         ...mockProduct,
         seller: mockUser,
         sellerId: mockUser.id,
+        bidderId: otherUser.id,
         progress: Progress.Closed,
       });
 
       const result = await productService.editProgress(
-        {
-          productId: mockProduct.id,
-          progress: Progress.Paid,
-        },
-        mockUser,
+        { productId: mockProduct.id },
+        otherUser,
       );
       expect(result).toEqual({
         ok: true,
@@ -449,14 +397,12 @@ describe('ProductService', () => {
         ...mockProduct,
         seller: mockUser,
         sellerId: mockUser.id,
+        bidderId: otherUser.id,
         progress: Progress.Paid,
       });
 
       const result = await productService.editProgress(
-        {
-          productId: mockProduct.id,
-          progress: Progress.Completed,
-        },
+        { productId: mockProduct.id },
         mockUser,
       );
       expect(result).toEqual({
