@@ -244,10 +244,6 @@ export class ProductService {
         };
       }
 
-      // Create
-      if (product.progress === Progress.Waiting) {
-        this.createTimer(product);
-      }
       // Update
       if (bidPrice) {
         if (product.bidderId === user.id) {
@@ -261,7 +257,6 @@ export class ProductService {
             error: `Bid price must be more than ${product.bidPrice}`,
           };
         }
-        this.updateTimer(product);
       }
 
       product.bidder = user;
@@ -270,6 +265,7 @@ export class ProductService {
       product.progress = Progress.InProgress;
 
       await this.productRepo.save(product);
+      this.createTimer(product);
 
       return {
         ok: true,
@@ -282,23 +278,26 @@ export class ProductService {
   }
 
   createTimer(product: Product) {
-    this.schedulerRegistry.addTimeout(
-      'createdTimer',
-      setTimeout(async () => {
-        product.progress = Progress.Closed;
-        await this.productRepo.save(product);
-      }, 600000),
-    );
-  }
-
-  updateTimer(product: Product) {
     const timers = this.schedulerRegistry.getTimeouts();
-    timers.forEach((key) => {
-      this.schedulerRegistry.deleteTimeout(`${key}`);
-    });
+
+    if (timers.length !== 0) {
+      timers.forEach((key) => {
+        if (key === `createdTimerId:${product.id}`) {
+          this.schedulerRegistry.deleteTimeout(`${key}`);
+
+          this.schedulerRegistry.addTimeout(
+            `createdTimerId:${product.id}`,
+            setTimeout(async () => {
+              product.progress = Progress.Closed;
+              await this.productRepo.save(product);
+            }, 600000),
+          );
+        }
+      });
+    }
 
     this.schedulerRegistry.addTimeout(
-      'updatedTimer',
+      `createdTimerId:${product.id}`,
       setTimeout(async () => {
         product.progress = Progress.Closed;
         await this.productRepo.save(product);
