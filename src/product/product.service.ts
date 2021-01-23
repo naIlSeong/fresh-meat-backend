@@ -156,7 +156,7 @@ export class ProductService {
   }
 
   async editProgress(
-    { productId, progress }: EditProductDto,
+    { productId }: EditProductDto,
     user: User,
   ): Promise<CommonOutput> {
     try {
@@ -167,48 +167,29 @@ export class ProductService {
         };
       }
 
-      if (product.sellerId !== user.id) {
-        return {
-          error: 'Not your product',
-        };
+      // Closed -> Paid
+      if (product.progress === Progress.Closed) {
+        if (product.bidderId !== user.id) {
+          return {
+            error: "Can't edit progress",
+          };
+        }
       }
 
-      if (
-        product.progress === Progress.Waiting &&
-        progress !== Progress.InProgress
-      ) {
-        return {
-          error: "Can't edit progress",
-        };
+      // Paid -> Completed
+      if (product.progress === Progress.Paid) {
+        if (product.sellerId !== user.id) {
+          return {
+            error: "Can't edit progress",
+          };
+        }
       }
 
-      if (
-        product.progress === Progress.InProgress &&
-        progress !== Progress.Closed
-      ) {
-        return {
-          error: "Can't edit progress",
-        };
-      }
-
-      if (product.progress === Progress.Closed && progress !== Progress.Paid) {
-        return {
-          error: "Can't edit progress",
-        };
-      }
-
-      if (
-        product.progress === Progress.Paid &&
-        progress !== Progress.Completed
-      ) {
-        return {
-          error: "Can't edit progress",
-        };
-      }
-
-      product.progress = progress;
+      product.progress =
+        product.progress === Progress.Closed
+          ? Progress.Paid
+          : Progress.Completed;
       await this.productRepo.save(product);
-
       return {
         ok: true,
       };
