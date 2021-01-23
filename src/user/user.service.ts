@@ -150,6 +150,7 @@ export class UserService {
         }
         user.password = password;
       }
+
       await this.userRepo.save(user);
       await this.logout(context);
       return {

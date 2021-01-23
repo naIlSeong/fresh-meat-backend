@@ -4,8 +4,16 @@
 
 ## Table of contents
 
+- [General info](#general-info)
 - [Structure](#structure)
 - [Todo](#todo)
+- [Test](#test)
+
+---
+
+## General info
+
+<a href="https://nestjs.com/" target="_blank">NestJS</a>, <a href="https://graphql.org/" target="_blank">GraphQL</a>, <a href="https://typeorm.io/#/" target="_blank">TypeORM</a>, <a href="https://www.postgresql.org/" target="_blank">PostgreSQL</a> and <a href="https://redis.io/" target="_blank">Redis</a>
 
 ---
 
@@ -53,3 +61,53 @@
     - Closed (Waiting for payment)
     - Paid (Waiting for confirmation)
     - Completed
+
+---
+
+## Test
+
+To run test this project:
+
+```
+// Unit Test
+
+$ npm run test
+```
+
+</br>
+<div style="text-align:center">
+  <img src="./images/fresh-meat-user-service-unit-test.png" />
+</div>
+<div style="text-align:center">
+  <span style="font-weight:bold">
+    User Service
+  </span>
+</div>
+</br>
+  
+</br>
+<div style="text-align:center">
+  <img src="./images/fresh-meat-product-service-unit-test.png" />
+</div>
+<div style="text-align:center">
+  <span style="font-weight:bold">
+    Product Service
+  </span>
+</div>
+</br>
+
+```
+// Unit Test Coverage
+
+$ npm run test:cov
+```
+
+</br>
+<div style="text-align:center">
+  <img src="./images/fresh-meat-unit-test-coverage.png" />
+</div>
+<div style="text-align:center">
+  <span style="font-weight:bold">
+    Unit Test Coverage
+  </span>
+</div>

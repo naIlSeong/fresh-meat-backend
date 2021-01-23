@@ -260,19 +260,10 @@ export class ProductService {
 
   createTimer(product: Product) {
     const timers = this.schedulerRegistry.getTimeouts();
-
     if (timers.length !== 0) {
       timers.forEach((key) => {
         if (key === `createdTimerId:${product.id}`) {
           this.schedulerRegistry.deleteTimeout(`${key}`);
-
-          this.schedulerRegistry.addTimeout(
-            `createdTimerId:${product.id}`,
-            setTimeout(async () => {
-              product.progress = Progress.Closed;
-              await this.productRepo.save(product);
-            }, 600000),
-          );
         }
       });
     }

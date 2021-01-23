@@ -65,6 +65,10 @@ describe('ProductService', () => {
     jest.useFakeTimers();
   });
 
+  afterEach(() => {
+    jest.clearAllTimers();
+  });
+
   describe('uploadProduct', () => {
     it('Error : Product name is required', async () => {
       const result = await productService.uploadProduct(
@@ -513,7 +517,7 @@ describe('ProductService', () => {
         progress: Progress.Waiting,
       });
 
-      schedulerRegistry.getTimeouts.mockReturnValue(['createdTimer']);
+      schedulerRegistry.getTimeouts.mockReturnValue([]);
 
       const result = await productService.createBidding(
         { productId: mockProduct.id },
@@ -534,7 +538,9 @@ describe('ProductService', () => {
         progress: Progress.InProgress,
       });
 
-      schedulerRegistry.getTimeouts.mockReturnValue(['createdTimer']);
+      schedulerRegistry.getTimeouts.mockReturnValue([
+        `createdTimerId:${mockProduct.id}`,
+      ]);
 
       const result = await productService.createBidding(
         { productId: mockProduct.id, bidPrice: 23456 },

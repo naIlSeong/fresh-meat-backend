@@ -146,21 +146,6 @@ describe('User Service', () => {
     });
   });
 
-  // TODO : Fix Error
-  describe('logout', () => {
-    // let mockContext: IContext;
-    // // mockContext.req.session.destroy = jest
-    // //   .fn()
-    // //   .mockImplementation(() => Promise.reject());
-    // it('Error : Unexpected error', async () => {
-    //   const result = await userService.logout(mockContext);
-    //   expect(result).toEqual({
-    //     ok: true,
-    //   });
-    // });
-    // it.todo('Logout & Destroy Session');
-  });
-
   describe('userDetail', () => {
     it('Error : User not found', async () => {
       userRepo.findOne.mockResolvedValue(null);
@@ -276,7 +261,6 @@ describe('User Service', () => {
       expect(result).toEqual({
         ok: true,
       });
-      expect(userRepo.save).toBeCalled();
     });
   });
 
