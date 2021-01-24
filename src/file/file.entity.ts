@@ -1,5 +1,5 @@
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
-import { IsString, IsUrl } from 'class-validator';
+import { IsString, IsUrl, IsUUID } from 'class-validator';
 import { CommonEntity } from 'src/common/common.entity';
 import { Product } from 'src/product/product.entity';
 import { Column, Entity, ManyToOne } from 'typeorm';
@@ -19,6 +19,6 @@ export class File extends CommonEntity {
 
   @Column()
   @Field((type) => String)
-  @IsString()
+  @IsUUID()
   uuid: string;
 }
