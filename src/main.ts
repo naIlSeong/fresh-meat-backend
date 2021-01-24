@@ -4,6 +4,7 @@ import { AppModule } from './app.module';
 import * as session from 'express-session';
 import * as redis from 'redis';
 import * as connectRedis from 'connect-redis';
+import { config } from 'aws-sdk';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -32,6 +33,11 @@ async function bootstrap() {
     }),
   );
   app.useGlobalPipes(new ValidationPipe());
+  config.update({
+    accessKeyId: process.env.AWS_ACCESS_ID,
+    secretAccessKey: process.env.AWS_PRIVATE_KEY,
+    region: process.env.AWS_REGION,
+  });
   await app.listen(3000);
 }
 bootstrap();

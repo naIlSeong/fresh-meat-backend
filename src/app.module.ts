@@ -9,6 +9,8 @@ import { AuthModule } from './auth/auth.module';
 import { ProductModule } from './product/product.module';
 import { Product } from './product/product.entity';
 import { ScheduleModule } from '@nestjs/schedule';
+import { FileModule } from './file/file.module';
+import { File } from './file/file.entity';
 
 @Module({
   imports: [
@@ -33,6 +35,10 @@ import { ScheduleModule } from '@nestjs/schedule';
         DB_USERNAME: Joi.string().required(),
         DB_DATABASE: Joi.string().required(),
         ROUNDS: Joi.string().default(10),
+        AWS_ACCESS_ID: Joi.string().required(),
+        AWS_PRIVATE_KEY: Joi.string().required(),
+        AWS_REGION: Joi.string().required(),
+        AWS_BUCKET_NAME: Joi.string().required(),
       }),
     }),
     TypeOrmModule.forRoot({
@@ -43,12 +49,13 @@ import { ScheduleModule } from '@nestjs/schedule';
       database: process.env.DB_DATABASE,
       synchronize: true,
       logging: process.env.NODE_ENV !== 'production',
-      entities: [User, Product],
+      entities: [User, Product, File],
     }),
     UserModule,
     AuthModule,
     ProductModule,
     ScheduleModule.forRoot(),
+    FileModule,
   ],
 })
 export class AppModule {}

@@ -6,8 +6,9 @@ import {
 } from '@nestjs/graphql';
 import { IsDateString, IsEnum, IsNumber, IsString } from 'class-validator';
 import { CommonEntity } from 'src/common/common.entity';
+import { File } from 'src/file/file.entity';
 import { User } from 'src/user/user.entity';
-import { Column, Entity, ManyToOne, RelationId } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany, RelationId } from 'typeorm';
 
 export enum Progress {
   Waiting = 'Waiting',
@@ -32,6 +33,12 @@ export class Product extends CommonEntity {
   @Field((type) => String, { nullable: true })
   @IsString()
   description?: string;
+
+  @OneToMany((type) => File, (file) => file.product, {
+    onDelete: 'CASCADE',
+  })
+  @Field((type) => [File])
+  files: File[];
 
   @ManyToOne((type) => User, (user) => user.sellingProducts)
   @Field((type) => User)
