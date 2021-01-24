@@ -37,9 +37,10 @@ export class Product extends CommonEntity {
   @OneToMany((type) => File, (file) => file.product, {
     onDelete: 'CASCADE',
     eager: true,
+    nullable: true,
   })
-  @Field((type) => [File])
-  files: File[];
+  @Field((type) => [File], { nullable: true })
+  files?: File[];
 
   @ManyToOne((type) => User, (user) => user.sellingProducts)
   @Field((type) => User)

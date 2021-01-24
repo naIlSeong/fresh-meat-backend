@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { SchedulerRegistry } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CommonOutput } from 'src/common/common.dto';
+import { FileService } from 'src/file/file.service';
 import { User } from 'src/user/user.entity';
 import { Repository } from 'typeorm';
 import { CreateBiddingDto } from './dto/create-bidding.dto';
@@ -20,6 +21,7 @@ export class ProductService {
     @InjectRepository(Product)
     private readonly productRepo: Repository<Product>,
     private schedulerRegistry: SchedulerRegistry,
+    private readonly fileService: FileService,
   ) {}
 
   async uploadProduct(
@@ -39,9 +41,35 @@ export class ProductService {
         };
       }
 
-      await this.productRepo.save(
-        this.productRepo.create({ ...uploadProductDto, seller: user }),
-      );
+      const product = this.productRepo.create({
+        ...uploadProductDto,
+        seller: user,
+      });
+
+      await this.productRepo.save(product);
+      return {
+        ok: true,
+      };
+    } catch (error) {
+      return {
+        error: 'Unexpected error',
+      };
+    }
+  }
+
+  async uploadFiles(
+    product: Product,
+    imageBuffers: Buffer[],
+  ): Promise<CommonOutput> {
+    try {
+      let files = [];
+      imageBuffers.forEach((buffer) => {
+        const file = this.fileService.uploadPublicFile(buffer);
+        files.push(file);
+      });
+
+      product.files = files;
+      await this.productRepo.save(product);
       return {
         ok: true,
       };

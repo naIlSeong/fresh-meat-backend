@@ -7,5 +7,6 @@ import { File } from './file.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([File])],
   providers: [FileService, FileResolver],
+  exports: [FileService],
 })
 export class FileModule {}
