@@ -12,6 +12,7 @@ import {
   ProductDetailDto,
   ProductDetailOutput,
 } from './dto/product-detail.dto';
+import { UploadFileDto } from './dto/upload-file.dto';
 import { UploadProductDto } from './dto/upload-product.dto';
 import { Product, Progress } from './product.entity';
 
@@ -57,18 +58,27 @@ export class ProductService {
     }
   }
 
-  async uploadFiles(
-    product: Product,
-    imageBuffers: Buffer[],
+  async uploadFile(
+    { productId, imageBuffer }: UploadFileDto,
+    user: User,
   ): Promise<CommonOutput> {
     try {
-      let files = [];
-      imageBuffers.forEach((buffer) => {
-        const file = this.fileService.uploadPublicFile(buffer);
-        files.push(file);
-      });
+      const product = await this.productRepo.findOne({ id: productId });
+      if (!product) {
+        return {
+          error: 'Product not found',
+        };
+      }
 
-      product.files = files;
+      if (product.sellerId !== user.id) {
+        return {
+          error: 'Not your product',
+        };
+      }
+
+      const file = this.fileService.uploadPublicFile(imageBuffer);
+
+      product.files.push(file);
       await this.productRepo.save(product);
       return {
         ok: true,
