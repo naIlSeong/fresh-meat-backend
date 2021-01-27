@@ -10,7 +10,6 @@ import {
   ProductDetailDto,
   ProductDetailOutput,
 } from './dto/product-detail.dto';
-import { UploadFileDto } from './dto/upload-file.dto';
 import { UploadProductDto } from './dto/upload-product.dto';
 import { Product } from './product.entity';
 import { ProductService } from './product.service';
@@ -25,14 +24,6 @@ export class ProductResolver {
     @CurrentUser() user: User,
   ): Promise<CommonOutput> {
     return this.productService.uploadProduct(uploadProductDto, user);
-  }
-
-  @Mutation((returns) => CommonOutput)
-  uploadFile(
-    @Args('input') uploadFileDto: UploadFileDto,
-    @CurrentUser() user: User,
-  ): Promise<CommonOutput> {
-    return this.productService.uploadFile(uploadFileDto, user);
   }
 
   @Mutation((returns) => CommonOutput)

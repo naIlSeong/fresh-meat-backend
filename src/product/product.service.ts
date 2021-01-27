@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { SchedulerRegistry } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CommonOutput } from 'src/common/common.dto';
-import { FileService } from 'src/file/file.service';
 import { User } from 'src/user/user.entity';
 import { Repository } from 'typeorm';
 import { CreateBiddingDto } from './dto/create-bidding.dto';
@@ -12,7 +11,6 @@ import {
   ProductDetailDto,
   ProductDetailOutput,
 } from './dto/product-detail.dto';
-import { UploadFileDto } from './dto/upload-file.dto';
 import { UploadProductDto } from './dto/upload-product.dto';
 import { Product, Progress } from './product.entity';
 
@@ -22,7 +20,6 @@ export class ProductService {
     @InjectRepository(Product)
     private readonly productRepo: Repository<Product>,
     private schedulerRegistry: SchedulerRegistry,
-    private readonly fileService: FileService,
   ) {}
 
   async uploadProduct(
@@ -47,38 +44,6 @@ export class ProductService {
         seller: user,
       });
 
-      await this.productRepo.save(product);
-      return {
-        ok: true,
-      };
-    } catch (error) {
-      return {
-        error: 'Unexpected error',
-      };
-    }
-  }
-
-  async uploadFile(
-    { productId, imageBuffer }: UploadFileDto,
-    user: User,
-  ): Promise<CommonOutput> {
-    try {
-      const product = await this.productRepo.findOne({ id: productId });
-      if (!product) {
-        return {
-          error: 'Product not found',
-        };
-      }
-
-      if (product.sellerId !== user.id) {
-        return {
-          error: 'Not your product',
-        };
-      }
-
-      const file = this.fileService.uploadPublicFile(imageBuffer);
-
-      product.files.push(file);
       await this.productRepo.save(product);
       return {
         ok: true,

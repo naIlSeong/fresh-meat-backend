@@ -9,8 +9,6 @@ import { AuthModule } from './auth/auth.module';
 import { ProductModule } from './product/product.module';
 import { Product } from './product/product.entity';
 import { ScheduleModule } from '@nestjs/schedule';
-import { FileModule } from './file/file.module';
-import { File } from './file/file.entity';
 
 @Module({
   imports: [
@@ -49,13 +47,12 @@ import { File } from './file/file.entity';
       database: process.env.DB_DATABASE,
       synchronize: true,
       logging: process.env.NODE_ENV !== 'production',
-      entities: [User, Product, File],
+      entities: [User, Product],
     }),
     UserModule,
     AuthModule,
     ProductModule,
     ScheduleModule.forRoot(),
-    FileModule,
   ],
 })
 export class AppModule {}
