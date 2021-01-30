@@ -10,6 +10,7 @@ import { ProductModule } from './product/product.module';
 import { Product } from './product/product.entity';
 import { ScheduleModule } from '@nestjs/schedule';
 import { FileModule } from './file/file.module';
+import { File } from './file/file.entity';
 
 @Module({
   imports: [
@@ -48,7 +49,7 @@ import { FileModule } from './file/file.module';
       database: process.env.DB_DATABASE,
       synchronize: true,
       logging: process.env.NODE_ENV !== 'production',
-      entities: [User, Product],
+      entities: [User, Product, File],
     }),
     UserModule,
     AuthModule,
