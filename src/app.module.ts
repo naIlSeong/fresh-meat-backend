@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import { ProductModule } from './product/product.module';
 import { Product } from './product/product.entity';
 import { ScheduleModule } from '@nestjs/schedule';
+import { FileModule } from './file/file.module';
 
 @Module({
   imports: [
@@ -53,6 +54,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     AuthModule,
     ProductModule,
     ScheduleModule.forRoot(),
+    FileModule,
   ],
 })
 export class AppModule {}
