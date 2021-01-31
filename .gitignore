@@ -34,4 +34,5 @@ lerna-debug.log*
 !.vscode/extensions.json
 
 .development.env
+.test.env
 dump.rdb

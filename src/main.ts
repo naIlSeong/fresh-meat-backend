@@ -5,20 +5,25 @@ import * as session from 'express-session';
 import * as redis from 'redis';
 import * as connectRedis from 'connect-redis';
 import { config } from 'aws-sdk';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  const configService = app.get(ConfigService);
   const RedisStore = connectRedis(session);
   const redisClient = redis.createClient({
     host: 'localhost',
     port: 6379,
   });
+
   redisClient.on('error', function (err) {
     console.log('🔥 Could not establish a connection with redis. ' + err);
   });
   redisClient.on('connect', function (err) {
     console.log('🔥 Connected to redis successfully');
   });
+
   app.use(
     session({
       store: new RedisStore({ client: redisClient }),
@@ -32,12 +37,13 @@ async function bootstrap() {
       },
     }),
   );
+
   app.useGlobalPipes(new ValidationPipe());
   config.update({
-    accessKeyId: process.env.AWS_ACCESS_ID,
-    secretAccessKey: process.env.AWS_PRIVATE_KEY,
-    region: process.env.AWS_REGION,
+    accessKeyId: configService.get('AWS_ACCESS_ID'),
+    secretAccessKey: configService.get('AWS_PRIVATE_KEY'),
   });
+
   await app.listen(3000);
 }
 bootstrap();

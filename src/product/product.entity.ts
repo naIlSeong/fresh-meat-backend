@@ -34,9 +34,13 @@ export class Product extends CommonEntity {
   @IsString()
   description?: string;
 
-  @OneToMany((type) => File, (file) => file.product, { onDelete: 'CASCADE' })
+  @OneToMany((type) => File, (file) => file.product, {
+    onDelete: 'CASCADE',
+    nullable: true,
+    eager: true,
+  })
   @Field((type) => [File])
-  pictures: File[];
+  pictures?: File[];
 
   @ManyToOne((type) => User, (user) => user.sellingProducts)
   @Field((type) => User)

@@ -140,7 +140,10 @@ export class ProductService {
     productId,
   }: ProductDetailDto): Promise<ProductDetailOutput> {
     try {
-      const product = await this.productRepo.findOne({ id: productId });
+      const product = await this.productRepo.findOne({
+        where: { id: productId },
+        relations: ['seller'],
+      });
       if (!product) {
         return {
           error: 'Product not found',
