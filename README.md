@@ -66,7 +66,7 @@
 
 ## Test
 
-To run test this project:
+**To run test this project:**
 
 ```
 // Unit Test
@@ -109,5 +109,17 @@ $ npm run test:cov
 <div style="text-align:center">
   <span style="font-weight:bold">
     Unit Test Coverage
+  </span>
+</div>
+
+---
+
+</br>
+<div style="text-align:center">
+  <img src="./images/upload-image-postman.png" />
+</div>
+<div style="text-align:center">
+  <span style="font-weight:bold">
+    uploadImage test using postman
   </span>
 </div>
