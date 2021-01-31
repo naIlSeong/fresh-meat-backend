@@ -49,13 +49,16 @@ export class FileService {
         })
         .promise();
 
-      await this.fileRepo.save(
-        this.fileRepo.create({
-          product,
-          url: Location,
-          key: Key,
-        }),
-      );
+      const picture = this.fileRepo.create({
+        product,
+        url: Location,
+        key: Key,
+      });
+      const pictures = product.pictures;
+      pictures.push(picture);
+
+      await this.fileRepo.save(picture);
+      await this.productRepo.save({ ...product, pictures });
 
       return {
         ok: true,
