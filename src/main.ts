@@ -44,6 +44,6 @@ async function bootstrap() {
     secretAccessKey: configService.get('AWS_PRIVATE_KEY'),
   });
 
-  await app.listen(3000);
+  await app.listen(4000);
 }
 bootstrap();
