@@ -4,7 +4,7 @@ import { CommonOutput } from 'src/common/common.dto';
 import { IContext } from 'src/common/common.interface';
 import { CurrentUser } from '../auth/auth.decorator';
 import { CreateUserDto } from './dto/create-user.dto';
-import { LoginDto } from './dto/login-dto';
+import { LoginDto, LoginOutput } from './dto/login-dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserDetailDto, UserDetailOutput } from './dto/user-detail.dto';
 import { User } from './user.entity';
@@ -28,11 +28,11 @@ export class UserResolver {
   }
 
   @Public()
-  @Mutation((returns) => CommonOutput)
+  @Mutation((returns) => LoginOutput)
   login(
     @Args('input') loginDto: LoginDto,
     @Context() context: IContext,
-  ): Promise<CommonOutput> {
+  ): Promise<LoginOutput> {
     return this.userService.login(loginDto, context.req.session);
   }
 

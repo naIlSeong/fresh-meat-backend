@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CommonOutput } from 'src/common/common.dto';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
-import { LoginDto } from './dto/login-dto';
+import { LoginDto, LoginOutput } from './dto/login-dto';
 import { User } from './user.entity';
 import * as bcrypt from 'bcrypt';
 import { UserDetailDto, UserDetailOutput } from './dto/user-detail.dto';
@@ -50,7 +50,7 @@ export class UserService {
   async login(
     { email, password }: LoginDto,
     session: ISession,
-  ): Promise<CommonOutput> {
+  ): Promise<LoginOutput> {
     try {
       const user = await this.userRepo.findOne({ email });
       if (!user) {
@@ -65,9 +65,11 @@ export class UserService {
           error: 'Wrong password',
         };
       }
+
       session.user = user;
       return {
         ok: true,
+        sessionId: session.id,
       };
     } catch (error) {
       return {
