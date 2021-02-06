@@ -33,7 +33,7 @@ export class UserResolver {
     @Args('input') loginDto: LoginDto,
     @Context() context: IContext,
   ): Promise<LoginOutput> {
-    return this.userService.login(loginDto, context.req.session);
+    return this.userService.login(loginDto, context);
   }
 
   @Mutation((returns) => CommonOutput)

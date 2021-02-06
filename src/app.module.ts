@@ -16,7 +16,11 @@ import { File } from './file/file.entity';
   imports: [
     GraphQLModule.forRoot({
       autoSchemaFile: true,
-      context: ({ req }) => ({ sessionId: req.headers['sessionid'] }),
+      context: ({ req, res }) => ({ req, res }),
+      cors: {
+        credentials: true,
+        origin: true,
+      },
     }),
     ConfigModule.forRoot({
       isGlobal: true,

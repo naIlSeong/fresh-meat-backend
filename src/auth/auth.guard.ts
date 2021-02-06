@@ -16,10 +16,11 @@ export class AuthGuard implements CanActivate {
       context.getClass(),
     ]);
 
+    console.log('Cookie : ', ctx.req.headers.cookie);
+
     if (isPublic) {
       return true;
     }
-
     if (ctx.req.headers['cookie'] && session.user) {
       return true;
     }

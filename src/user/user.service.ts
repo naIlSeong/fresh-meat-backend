@@ -49,7 +49,7 @@ export class UserService {
 
   async login(
     { email, password }: LoginDto,
-    session: ISession,
+    context: IContext,
   ): Promise<LoginOutput> {
     try {
       const user = await this.userRepo.findOne({ email });
@@ -66,6 +66,7 @@ export class UserService {
         };
       }
 
+      const session: ISession = context.req.session;
       session.user = user;
       return {
         ok: true,
