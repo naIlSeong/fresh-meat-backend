@@ -8,6 +8,7 @@
 - [Structure](#structure)
 - [Todo](#todo)
 - [Test](#test)
+- [Memo](#memo)
 
 ---
 
@@ -123,3 +124,11 @@ $ npm run test:cov
     uploadImage test using postman
   </span>
 </div>
+
+---
+
+## Memo
+
+**Problem** : Set-cookie not working when executing login mutation in playground
+
+**Solution** : In playground "request.credentials": "omit" &rarr; "same-origin"
