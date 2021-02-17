@@ -6,6 +6,7 @@ import * as redis from 'redis';
 import * as connectRedis from 'connect-redis';
 import { config } from 'aws-sdk';
 import { ConfigService } from '@nestjs/config';
+import { altairExpress } from 'altair-express-middleware';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -27,7 +28,7 @@ async function bootstrap() {
   app.use(
     session({
       store: new RedisStore({ client: redisClient }),
-      secret: 'secret$%^134',
+      secret: configService.get('SESSION_SECRET'),
       resave: false,
       saveUninitialized: false,
       cookie: {
@@ -43,6 +44,13 @@ async function bootstrap() {
     accessKeyId: configService.get('AWS_ACCESS_ID'),
     secretAccessKey: configService.get('AWS_PRIVATE_KEY'),
   });
+
+  app.use(
+    '/altair',
+    altairExpress({
+      endpointURL: '/graphql',
+    }),
+  );
 
   await app.listen(4000);
 }

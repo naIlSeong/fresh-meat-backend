@@ -31,6 +31,7 @@
     "@nestjs/typeorm": "^7.1.5",
     "@types/aws-sdk": "^2.7.0",
     "@types/uuid": "^8.3.0",
+    "altair-express-middleware": "^3.2.1",
     "apollo-server-express": "^2.19.1",
     "aws-sdk": "^2.831.0",
     "bcrypt": "^5.0.0",
