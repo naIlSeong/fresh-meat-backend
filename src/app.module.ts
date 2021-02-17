@@ -43,6 +43,11 @@ import { File } from './file/file.entity';
         AWS_PRIVATE_KEY: Joi.string().required(),
         AWS_REGION: Joi.string().required(),
         AWS_BUCKET_NAME: Joi.string().required(),
+        SESSION_SECRET: Joi.string().required(),
+        SSL: Joi.bool().required(),
+        SSL_CERT_PATH: Joi.string(),
+        SSL_KEY_PATH: Joi.string(),
+        PORT: Joi.string(),
       }),
     }),
     TypeOrmModule.forRoot({

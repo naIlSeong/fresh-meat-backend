@@ -7,9 +7,24 @@ import * as connectRedis from 'connect-redis';
 import { config } from 'aws-sdk';
 import { ConfigService } from '@nestjs/config';
 import { altairExpress } from 'altair-express-middleware';
+import * as fs from 'fs';
+import * as path from 'path';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const ssl = process.env.SSL === 'true' ? true : false;
+  const PORT = +process.env.PORT || 3000;
+
+  let httpsOptions = null;
+  if (ssl) {
+    const keyPath = process.env.SSL_KEY_PATH || '';
+    const certPath = process.env.SSL_CERT_PATH || '';
+    httpsOptions = {
+      key: fs.readFileSync(path.join(__dirname, keyPath)),
+      cert: fs.readFileSync(path.join(__dirname, certPath)),
+    };
+  }
+
+  const app = await NestFactory.create(AppModule, { httpsOptions });
 
   const configService = app.get(ConfigService);
   const RedisStore = connectRedis(session);
@@ -32,9 +47,10 @@ async function bootstrap() {
       resave: false,
       saveUninitialized: false,
       cookie: {
-        secure: false, // if true only transmit cookie over https
+        secure: true, // if true only transmit cookie over https
         httpOnly: false, // if true prevent client side JS from reading the cookie
         maxAge: 1000 * 60 * 10, // session max age in miliseconds
+        sameSite: 'none',
       },
     }),
   );
@@ -52,6 +68,7 @@ async function bootstrap() {
     }),
   );
 
-  await app.listen(4000);
+  await app.listen(PORT);
+  console.log(`🔥 Server running on 👉 https://localhost:${PORT}`);
 }
 bootstrap();
