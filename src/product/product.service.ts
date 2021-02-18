@@ -287,11 +287,36 @@ export class ProductService {
     );
   }
 
-  async getAllProducts({
+  async getWaitingProducts({
     page,
   }: GetAllProductsDto): Promise<GetAllProductsOutput> {
     try {
       const products = await this.productRepo.find({
+        where: { progress: Progress.Waiting },
+        take: 9,
+        skip: (page - 1) * 9,
+        order: {
+          createdAt: 'DESC',
+        },
+      });
+
+      return {
+        ok: true,
+        products,
+      };
+    } catch (error) {
+      return {
+        error: 'Unexpected error',
+      };
+    }
+  }
+
+  async getInProgressProducts({
+    page,
+  }: GetAllProductsDto): Promise<GetAllProductsOutput> {
+    try {
+      const products = await this.productRepo.find({
+        where: { progress: Progress.InProgress },
         take: 9,
         skip: (page - 1) * 9,
         order: {

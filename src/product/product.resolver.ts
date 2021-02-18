@@ -70,9 +70,16 @@ export class ProductResolver {
   }
 
   @Query((returns) => GetAllProductsOutput)
-  getAllProducts(
+  getWaitingProducts(
     @Args('input') getAllProductsDto: GetAllProductsDto,
   ): Promise<GetAllProductsOutput> {
-    return this.productService.getAllProducts(getAllProductsDto);
+    return this.productService.getWaitingProducts(getAllProductsDto);
+  }
+
+  @Query((returns) => GetAllProductsOutput)
+  getInProgressProducts(
+    @Args('input') getAllProductsDto: GetAllProductsDto,
+  ): Promise<GetAllProductsOutput> {
+    return this.productService.getInProgressProducts(getAllProductsDto);
   }
 }

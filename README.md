@@ -62,7 +62,8 @@
     - Closed (Waiting for payment)
     - Paid (Waiting for confirmation)
     - Completed
-  - [x] Get All Products
+  - [x] Get Waiting Products
+  - [x] Get InProgress Products
 
 ---
 
