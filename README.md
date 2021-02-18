@@ -62,6 +62,7 @@
     - Closed (Waiting for payment)
     - Paid (Waiting for confirmation)
     - Completed
+  - [x] Get All Products
 
 ---
 
@@ -129,6 +130,9 @@ $ npm run test:cov
 
 ## Memo
 
-**Problem** : Set-cookie not working when executing login mutation in playground
+#### **Issue #1**
 
-**Solution** : In playground "request.credentials": "omit" &rarr; "same-origin"
+Set-cookie not working when executing login mutation in playground
+
+**Solution**
+In playground "request.credentials": `"omit"` &rarr; `"same-origin"`

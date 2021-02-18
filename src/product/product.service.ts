@@ -8,6 +8,10 @@ import { CreateBiddingDto } from './dto/create-bidding.dto';
 import { DeleteProductDto } from './dto/delete-product.dto';
 import { EditProductDto } from './dto/edit-product.dto';
 import {
+  GetAllProductsDto,
+  GetAllProductsOutput,
+} from './dto/get-all-products.dto';
+import {
   ProductDetailDto,
   ProductDetailOutput,
 } from './dto/product-detail.dto';
@@ -281,5 +285,28 @@ export class ProductService {
         await this.productRepo.save(product);
       }, 600000),
     );
+  }
+
+  async getAllProducts({
+    page,
+  }: GetAllProductsDto): Promise<GetAllProductsOutput> {
+    try {
+      const products = await this.productRepo.find({
+        take: 9,
+        skip: (page - 1) * 9,
+        order: {
+          createdAt: 'DESC',
+        },
+      });
+
+      return {
+        ok: true,
+        products,
+      };
+    } catch (error) {
+      return {
+        error: 'Unexpected error',
+      };
+    }
   }
 }

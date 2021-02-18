@@ -7,6 +7,10 @@ import { DeleteProductDto } from './dto/delete-product.dto';
 import { EditProductDto } from './dto/edit-product.dto';
 import { EditProgressDto } from './dto/edit-progress.dto';
 import {
+  GetAllProductsDto,
+  GetAllProductsOutput,
+} from './dto/get-all-products.dto';
+import {
   ProductDetailDto,
   ProductDetailOutput,
 } from './dto/product-detail.dto';
@@ -63,5 +67,12 @@ export class ProductResolver {
     @CurrentUser() user: User,
   ): Promise<CommonOutput> {
     return this.productService.createBidding(createBiddingDto, user);
+  }
+
+  @Query((returns) => GetAllProductsOutput)
+  getAllProducts(
+    @Args('input') getAllProductsDto: GetAllProductsDto,
+  ): Promise<GetAllProductsOutput> {
+    return this.productService.getAllProducts(getAllProductsDto);
   }
 }
