@@ -291,7 +291,7 @@ export class ProductService {
     page,
   }: GetAllProductsDto): Promise<GetAllProductsOutput> {
     try {
-      const products = await this.productRepo.find({
+      const [products, productQuantity] = await this.productRepo.findAndCount({
         where: { progress: Progress.Waiting },
         take: 9,
         skip: (page - 1) * 9,
@@ -303,6 +303,7 @@ export class ProductService {
       return {
         ok: true,
         products,
+        maxPage: Math.ceil(productQuantity / 9),
       };
     } catch (error) {
       return {
@@ -315,7 +316,7 @@ export class ProductService {
     page,
   }: GetAllProductsDto): Promise<GetAllProductsOutput> {
     try {
-      const products = await this.productRepo.find({
+      const [products, productQuantity] = await this.productRepo.findAndCount({
         where: { progress: Progress.InProgress },
         take: 9,
         skip: (page - 1) * 9,
@@ -327,6 +328,7 @@ export class ProductService {
       return {
         ok: true,
         products,
+        maxPage: Math.ceil(productQuantity / 9),
       };
     } catch (error) {
       return {

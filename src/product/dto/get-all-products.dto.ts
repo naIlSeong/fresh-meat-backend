@@ -12,4 +12,7 @@ export class GetAllProductsDto {
 export class GetAllProductsOutput extends CommonOutput {
   @Field((type) => [Product], { nullable: true })
   products?: Product[];
+
+  @Field((type) => Number, { nullable: true })
+  maxPage?: number;
 }
