@@ -634,16 +634,56 @@ describe('ProductService', () => {
     it('Get all waiting products', async () => {
       productRepo.findAndCount.mockResolvedValue([
         [
-          { id: 10, createdAt: new Date('2021-02-21T18:00') },
-          { id: 9, createdAt: new Date('2021-02-21T17:00') },
-          { id: 8, createdAt: new Date('2021-02-21T16:00') },
-          { id: 7, createdAt: new Date('2021-02-21T15:00') },
-          { id: 6, createdAt: new Date('2021-02-21T14:00') },
-          { id: 5, createdAt: new Date('2021-02-21T13:00') },
-          { id: 4, createdAt: new Date('2021-02-21T12:00') },
-          { id: 3, createdAt: new Date('2021-02-21T11:00') },
-          { id: 2, createdAt: new Date('2021-02-21T10:00') },
-          { id: 1, createdAt: new Date('2021-02-21T09:00') },
+          {
+            id: 10,
+            createdAt: new Date('2021-02-21T18:00'),
+            progress: Progress.Waiting,
+          },
+          {
+            id: 9,
+            createdAt: new Date('2021-02-21T17:00'),
+            progress: Progress.Waiting,
+          },
+          {
+            id: 8,
+            createdAt: new Date('2021-02-21T16:00'),
+            progress: Progress.Waiting,
+          },
+          {
+            id: 7,
+            createdAt: new Date('2021-02-21T15:00'),
+            progress: Progress.Waiting,
+          },
+          {
+            id: 6,
+            createdAt: new Date('2021-02-21T14:00'),
+            progress: Progress.Waiting,
+          },
+          {
+            id: 5,
+            createdAt: new Date('2021-02-21T13:00'),
+            progress: Progress.Waiting,
+          },
+          {
+            id: 4,
+            createdAt: new Date('2021-02-21T12:00'),
+            progress: Progress.Waiting,
+          },
+          {
+            id: 3,
+            createdAt: new Date('2021-02-21T11:00'),
+            progress: Progress.Waiting,
+          },
+          {
+            id: 2,
+            createdAt: new Date('2021-02-21T10:00'),
+            progress: Progress.Waiting,
+          },
+          {
+            id: 1,
+            createdAt: new Date('2021-02-21T09:00'),
+            progress: Progress.Waiting,
+          },
         ],
         10,
       ]);
@@ -652,16 +692,183 @@ describe('ProductService', () => {
       expect(result).toEqual({
         ok: true,
         products: [
-          { id: 10, createdAt: new Date('2021-02-21T18:00') },
-          { id: 9, createdAt: new Date('2021-02-21T17:00') },
-          { id: 8, createdAt: new Date('2021-02-21T16:00') },
-          { id: 7, createdAt: new Date('2021-02-21T15:00') },
-          { id: 6, createdAt: new Date('2021-02-21T14:00') },
-          { id: 5, createdAt: new Date('2021-02-21T13:00') },
-          { id: 4, createdAt: new Date('2021-02-21T12:00') },
-          { id: 3, createdAt: new Date('2021-02-21T11:00') },
-          { id: 2, createdAt: new Date('2021-02-21T10:00') },
-          { id: 1, createdAt: new Date('2021-02-21T09:00') },
+          {
+            id: 10,
+            createdAt: new Date('2021-02-21T18:00'),
+            progress: Progress.Waiting,
+          },
+          {
+            id: 9,
+            createdAt: new Date('2021-02-21T17:00'),
+            progress: Progress.Waiting,
+          },
+          {
+            id: 8,
+            createdAt: new Date('2021-02-21T16:00'),
+            progress: Progress.Waiting,
+          },
+          {
+            id: 7,
+            createdAt: new Date('2021-02-21T15:00'),
+            progress: Progress.Waiting,
+          },
+          {
+            id: 6,
+            createdAt: new Date('2021-02-21T14:00'),
+            progress: Progress.Waiting,
+          },
+          {
+            id: 5,
+            createdAt: new Date('2021-02-21T13:00'),
+            progress: Progress.Waiting,
+          },
+          {
+            id: 4,
+            createdAt: new Date('2021-02-21T12:00'),
+            progress: Progress.Waiting,
+          },
+          {
+            id: 3,
+            createdAt: new Date('2021-02-21T11:00'),
+            progress: Progress.Waiting,
+          },
+          {
+            id: 2,
+            createdAt: new Date('2021-02-21T10:00'),
+            progress: Progress.Waiting,
+          },
+          {
+            id: 1,
+            createdAt: new Date('2021-02-21T09:00'),
+            progress: Progress.Waiting,
+          },
+        ],
+        maxPage: 2,
+      });
+    });
+  });
+
+  describe('getInProgressProducts', () => {
+    it('Error : Unexpected error', async () => {
+      productRepo.findAndCount.mockRejectedValue(new Error());
+
+      const result = await productService.getInProgressProducts({ page: 1 });
+      expect(result).toEqual({
+        error: 'Unexpected error',
+      });
+    });
+
+    it('Get all in progress products', async () => {
+      productRepo.findAndCount.mockResolvedValue([
+        [
+          {
+            id: 1,
+            updatedAt: new Date('2021-02-21T09:00'),
+            progress: Progress.InProgress,
+          },
+          {
+            id: 2,
+            updatedAt: new Date('2021-02-21T10:00'),
+            progress: Progress.InProgress,
+          },
+          {
+            id: 3,
+            updatedAt: new Date('2021-02-21T11:00'),
+            progress: Progress.InProgress,
+          },
+          {
+            id: 4,
+            updatedAt: new Date('2021-02-21T12:00'),
+            progress: Progress.InProgress,
+          },
+          {
+            id: 5,
+            updatedAt: new Date('2021-02-21T13:00'),
+            progress: Progress.InProgress,
+          },
+          {
+            id: 6,
+            updatedAt: new Date('2021-02-21T14:00'),
+            progress: Progress.InProgress,
+          },
+          {
+            id: 7,
+            updatedAt: new Date('2021-02-21T15:00'),
+            progress: Progress.InProgress,
+          },
+          {
+            id: 8,
+            updatedAt: new Date('2021-02-21T16:00'),
+            progress: Progress.InProgress,
+          },
+          {
+            id: 9,
+            updatedAt: new Date('2021-02-21T17:00'),
+            progress: Progress.InProgress,
+          },
+          {
+            id: 10,
+            updatedAt: new Date('2021-02-21T18:00'),
+            progress: Progress.InProgress,
+          },
+        ],
+        10,
+      ]);
+
+      const result = await productService.getInProgressProducts({ page: 1 });
+      expect(result).toEqual({
+        ok: true,
+        products: [
+          {
+            id: 1,
+            updatedAt: new Date('2021-02-21T09:00'),
+            progress: Progress.InProgress,
+          },
+          {
+            id: 2,
+            updatedAt: new Date('2021-02-21T10:00'),
+            progress: Progress.InProgress,
+          },
+          {
+            id: 3,
+            updatedAt: new Date('2021-02-21T11:00'),
+            progress: Progress.InProgress,
+          },
+          {
+            id: 4,
+            updatedAt: new Date('2021-02-21T12:00'),
+            progress: Progress.InProgress,
+          },
+          {
+            id: 5,
+            updatedAt: new Date('2021-02-21T13:00'),
+            progress: Progress.InProgress,
+          },
+          {
+            id: 6,
+            updatedAt: new Date('2021-02-21T14:00'),
+            progress: Progress.InProgress,
+          },
+          {
+            id: 7,
+            updatedAt: new Date('2021-02-21T15:00'),
+            progress: Progress.InProgress,
+          },
+          {
+            id: 8,
+            updatedAt: new Date('2021-02-21T16:00'),
+            progress: Progress.InProgress,
+          },
+          {
+            id: 9,
+            updatedAt: new Date('2021-02-21T17:00'),
+            progress: Progress.InProgress,
+          },
+          {
+            id: 10,
+            updatedAt: new Date('2021-02-21T18:00'),
+            progress: Progress.InProgress,
+          },
         ],
         maxPage: 2,
       });

@@ -361,7 +361,7 @@ export class ProductService {
         take: 9,
         skip: (page - 1) * 9,
         order: {
-          createdAt: 'DESC',
+          updatedAt: 'ASC',
         },
       });
 
