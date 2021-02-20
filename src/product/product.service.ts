@@ -15,6 +15,7 @@ import {
   ProductDetailDto,
   ProductDetailOutput,
 } from './dto/product-detail.dto';
+import { UpdateBiddingDto } from './dto/update-bidding.dto';
 import { UploadProductDto } from './dto/upload-product.dto';
 import { Product, Progress } from './product.entity';
 
@@ -210,8 +211,66 @@ export class ProductService {
     }
   }
 
+  // async createBidding(
+  //   { productId, bidPrice }: CreateBiddingDto,
+  //   user: User,
+  // ): Promise<CommonOutput> {
+  //   try {
+  //     const product = await this.productRepo.findOne({ id: productId });
+  //     if (!product) {
+  //       return {
+  //         error: 'Product not found',
+  //       };
+  //     }
+  //     if (product.sellerId === user.id) {
+  //       return {
+  //         error: "Can't bid on your product",
+  //       };
+  //     }
+  //     if (
+  //       product.progress !== Progress.Waiting &&
+  //       product.progress !== Progress.InProgress
+  //     ) {
+  //       return {
+  //         error: 'The auction has already closed',
+  //       };
+  //     }
+
+  //     // Update
+  //     if (bidPrice) {
+  //       if (product.bidderId === user.id) {
+  //         return {
+  //           error: 'Already bid on product',
+  //         };
+  //       }
+
+  //       if (product.bidPrice >= bidPrice) {
+  //         return {
+  //           error: `Bid price must be more than ${product.bidPrice}`,
+  //         };
+  //       }
+  //     }
+
+  //     product.bidder = user;
+  //     product.bidPrice = bidPrice ? bidPrice : product.startPrice;
+  //     product.remainingTime = new Date(new Date().valueOf() + 600000);
+  //     product.progress = Progress.InProgress;
+
+  //     await this.productRepo.save(product);
+  //     this.createTimer(product);
+
+  //     return {
+  //       ok: true,
+  //     };
+  //   } catch (error) {
+  //     return {
+  //       error: 'Unexpected error',
+  //     };
+  //   }
+  // }
+
   async createBidding(
-    { productId, bidPrice }: CreateBiddingDto,
+    { productId, startPrice }: CreateBiddingDto,
     user: User,
   ): Promise<CommonOutput> {
     try {
@@ -226,34 +285,73 @@ export class ProductService {
           error: "Can't bid on your product",
         };
       }
-      if (
-        product.progress !== Progress.Waiting &&
-        product.progress !== Progress.InProgress
-      ) {
+      if (product.progress !== Progress.Waiting) {
+        return {
+          error: 'The auction has already started',
+        };
+      }
+      if (product.startPrice !== startPrice) {
+        return {
+          error: 'Check the starting price again',
+        };
+      }
+
+      product.bidder = user;
+      product.bidPrice = product.startPrice;
+      product.remainingTime = new Date(new Date().valueOf() + 600000);
+      product.progress = Progress.InProgress;
+
+      await this.productRepo.save(product);
+      this.createTimer(product);
+
+      return {
+        ok: true,
+      };
+    } catch (error) {
+      return {
+        error: 'Unexpected error',
+      };
+    }
+  }
+
+  async updateBidding(
+    { productId, bidPrice }: UpdateBiddingDto,
+    user: User,
+  ): Promise<CommonOutput> {
+    try {
+      const product = await this.productRepo.findOne({ id: productId });
+      if (!product) {
+        return {
+          error: 'Product not found',
+        };
+      }
+      if (product.sellerId === user.id) {
+        return {
+          error: "Can't bid on your product",
+        };
+      }
+      if (product.progress !== Progress.InProgress) {
         return {
           error: 'The auction has already closed',
         };
       }
 
       // Update
-      if (bidPrice) {
-        if (product.bidderId === user.id) {
-          return {
-            error: 'Already bid on product',
-          };
-        }
+      if (product.bidderId === user.id) {
+        return {
+          error: 'Already bid on product',
+        };
+      }
 
-        if (product.bidPrice >= bidPrice) {
-          return {
-            error: `Bid price must be more than ${product.bidPrice}`,
-          };
-        }
+      if (product.bidPrice >= bidPrice) {
+        return {
+          error: `Bid price must be more than ${product.bidPrice}`,
+        };
       }
 
       product.bidder = user;
-      product.bidPrice = bidPrice ? bidPrice : product.startPrice;
+      product.bidPrice = bidPrice;
       product.remainingTime = new Date(new Date().valueOf() + 600000);
-      product.progress = Progress.InProgress;
 
       await this.productRepo.save(product);
       this.createTimer(product);

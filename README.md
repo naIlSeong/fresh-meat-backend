@@ -38,6 +38,8 @@
 
 ## Todo
 
+- [ ] How many people participated in the auction
+
 - **User Module**
 
   - [x] Create User

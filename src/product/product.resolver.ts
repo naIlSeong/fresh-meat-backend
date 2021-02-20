@@ -14,6 +14,7 @@ import {
   ProductDetailDto,
   ProductDetailOutput,
 } from './dto/product-detail.dto';
+import { UpdateBiddingDto } from './dto/update-bidding.dto';
 import { UploadProductDto } from './dto/upload-product.dto';
 import { Product } from './product.entity';
 import { ProductService } from './product.service';
@@ -67,6 +68,14 @@ export class ProductResolver {
     @CurrentUser() user: User,
   ): Promise<CommonOutput> {
     return this.productService.createBidding(createBiddingDto, user);
+  }
+
+  @Mutation((returns) => CommonOutput)
+  updateBidding(
+    @Args('input') updateBiddingDto: UpdateBiddingDto,
+    @CurrentUser() user: User,
+  ): Promise<CommonOutput> {
+    return this.productService.updateBidding(updateBiddingDto, user);
   }
 
   @Query((returns) => GetAllProductsOutput)

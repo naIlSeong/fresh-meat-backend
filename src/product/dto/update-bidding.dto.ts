@@ -1,10 +1,10 @@
 import { Field, InputType } from '@nestjs/graphql';
 
 @InputType()
-export class CreateBiddingDto {
+export class UpdateBiddingDto {
   @Field((type) => Number)
   productId: number;
 
   @Field((type) => Number)
-  startPrice: number;
+  bidPrice: number;
 }
