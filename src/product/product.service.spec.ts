@@ -420,7 +420,7 @@ describe('ProductService', () => {
       productRepo.findOne.mockResolvedValue(null);
 
       const result = await productService.createBidding(
-        { productId: mockProduct.id },
+        { productId: mockProduct.id, startPrice: 123 },
         mockUser,
       );
       expect(result).toEqual({
@@ -435,7 +435,7 @@ describe('ProductService', () => {
       });
 
       const result = await productService.createBidding(
-        { productId: mockProduct.id },
+        { productId: mockProduct.id, startPrice: 123 },
         mockUser,
       );
       expect(result).toEqual({
@@ -447,53 +447,33 @@ describe('ProductService', () => {
       productRepo.findOne.mockResolvedValue({
         id: mockProduct.id,
         sellerId: otherUser.id,
-        progress: Progress.Closed,
-      });
-
-      const result = await productService.createBidding(
-        { productId: mockProduct.id },
-        mockUser,
-      );
-      expect(result).toEqual({
-        error: 'The auction has already closed',
-      });
-    });
-
-    it('Error : Already bid on product', async () => {
-      productRepo.findOne.mockResolvedValue({
-        id: mockProduct.id,
-        startPrice: 777,
-        sellerId: otherUser.id,
-        bidPrice: 12345,
-        bidderId: mockUser.id,
         progress: Progress.InProgress,
       });
 
       const result = await productService.createBidding(
-        { productId: mockProduct.id, bidPrice: 23456 },
+        { productId: mockProduct.id, startPrice: 123 },
         mockUser,
       );
       expect(result).toEqual({
-        error: 'Already bid on product',
+        error: 'The auction has already started',
       });
     });
 
-    it('Error : Bid price must be more than 12345', async () => {
+    it('Error : Check the starting price again', async () => {
       productRepo.findOne.mockResolvedValue({
         id: mockProduct.id,
         startPrice: 777,
         sellerId: otherUser.id,
-        bidPrice: 12345,
         bidderId: 11,
-        progress: Progress.InProgress,
+        progress: Progress.Waiting,
       });
 
       const result = await productService.createBidding(
-        { productId: mockProduct.id, bidPrice: 1234 },
+        { productId: mockProduct.id, startPrice: 1234 },
         mockUser,
       );
       expect(result).toEqual({
-        error: 'Bid price must be more than 12345',
+        error: 'Check the starting price again',
       });
     });
 
@@ -501,7 +481,7 @@ describe('ProductService', () => {
       productRepo.findOne.mockRejectedValue(new Error());
 
       const result = await productService.createBidding(
-        { productId: mockProduct.id },
+        { productId: mockProduct.id, startPrice: 1234 },
         mockUser,
       );
       expect(result).toEqual({
@@ -520,30 +500,7 @@ describe('ProductService', () => {
       schedulerRegistry.getTimeouts.mockReturnValue([]);
 
       const result = await productService.createBidding(
-        { productId: mockProduct.id },
-        mockUser,
-      );
-      expect(result).toEqual({
-        ok: true,
-      });
-    });
-
-    it('Update bidding & remain time', async () => {
-      productRepo.findOne.mockResolvedValue({
-        id: mockProduct.id,
-        startPrice: 777,
-        sellerId: otherUser.id,
-        bidPrice: 12345,
-        bidderId: 11,
-        progress: Progress.InProgress,
-      });
-
-      schedulerRegistry.getTimeouts.mockReturnValue([
-        `createdTimerId:${mockProduct.id}`,
-      ]);
-
-      const result = await productService.createBidding(
-        { productId: mockProduct.id, bidPrice: 23456 },
+        { productId: mockProduct.id, startPrice: 777 },
         mockUser,
       );
       expect(result).toEqual({
