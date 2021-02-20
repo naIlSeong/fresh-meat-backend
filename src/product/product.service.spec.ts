@@ -11,6 +11,7 @@ const mockRepo = () => ({
   save: jest.fn(),
   findOne: jest.fn(),
   delete: jest.fn(),
+  findAndCount: jest.fn(),
 });
 
 const mockSchedulerRegistry = () => ({
@@ -616,6 +617,53 @@ describe('ProductService', () => {
       );
       expect(result).toEqual({
         ok: true,
+      });
+    });
+  });
+
+  describe('getWaitingProducts', () => {
+    it('Error : Unexpected error', async () => {
+      productRepo.findAndCount.mockRejectedValue(new Error());
+
+      const result = await productService.getWaitingProducts({ page: 1 });
+      expect(result).toEqual({
+        error: 'Unexpected error',
+      });
+    });
+
+    it('Get all waiting products', async () => {
+      productRepo.findAndCount.mockResolvedValue([
+        [
+          { id: 10, createdAt: new Date('2021-02-21T18:00') },
+          { id: 9, createdAt: new Date('2021-02-21T17:00') },
+          { id: 8, createdAt: new Date('2021-02-21T16:00') },
+          { id: 7, createdAt: new Date('2021-02-21T15:00') },
+          { id: 6, createdAt: new Date('2021-02-21T14:00') },
+          { id: 5, createdAt: new Date('2021-02-21T13:00') },
+          { id: 4, createdAt: new Date('2021-02-21T12:00') },
+          { id: 3, createdAt: new Date('2021-02-21T11:00') },
+          { id: 2, createdAt: new Date('2021-02-21T10:00') },
+          { id: 1, createdAt: new Date('2021-02-21T09:00') },
+        ],
+        10,
+      ]);
+
+      const result = await productService.getWaitingProducts({ page: 1 });
+      expect(result).toEqual({
+        ok: true,
+        products: [
+          { id: 10, createdAt: new Date('2021-02-21T18:00') },
+          { id: 9, createdAt: new Date('2021-02-21T17:00') },
+          { id: 8, createdAt: new Date('2021-02-21T16:00') },
+          { id: 7, createdAt: new Date('2021-02-21T15:00') },
+          { id: 6, createdAt: new Date('2021-02-21T14:00') },
+          { id: 5, createdAt: new Date('2021-02-21T13:00') },
+          { id: 4, createdAt: new Date('2021-02-21T12:00') },
+          { id: 3, createdAt: new Date('2021-02-21T11:00') },
+          { id: 2, createdAt: new Date('2021-02-21T10:00') },
+          { id: 1, createdAt: new Date('2021-02-21T09:00') },
+        ],
+        maxPage: 2,
       });
     });
   });
