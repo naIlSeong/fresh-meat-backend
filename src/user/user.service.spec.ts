@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import { UserService } from './user.service';
 import * as bcrypt from 'bcrypt';
-import { IContext, ISession } from 'src/common/common.interface';
+import { SessionData } from 'express-session';
 
 const mockRepo = () => ({
   findOne: jest.fn(),
@@ -40,6 +40,7 @@ describe('User Service', () => {
     mockUser.id = 1;
     mockUser.username = 'mockUsername';
     mockUser.email = 'mockEmail';
+    mockUser.password = 'mockPassword';
   });
 
   describe('createUser', () => {
@@ -102,7 +103,7 @@ describe('User Service', () => {
 
   describe('login', () => {
     let bcryptCompare: jest.Mock;
-    let mockSession: ISession = { id: 'xxx' };
+    let mockSession: SessionData = { id: 'xxx' };
 
     it('Error : Email not found', async () => {
       userRepo.findOne.mockResolvedValue(null);
@@ -142,9 +143,10 @@ describe('User Service', () => {
       expect(result).toEqual({
         ok: true,
       });
-      expect(mockSession).toEqual({ id: 'xxx', user: mockUser });
     });
   });
+
+  it.todo('logout');
 
   describe('userDetail', () => {
     it('Error : User not found', async () => {
@@ -185,7 +187,6 @@ describe('User Service', () => {
       password: 'updatedPassword',
     };
     let bcryptCompare: jest.Mock;
-    let mockContext: IContext;
 
     it('Error : Already exist username', async () => {
       userRepo.findOne.mockResolvedValueOnce(mockUser);
@@ -196,7 +197,6 @@ describe('User Service', () => {
       const result = await userService.updateUser(
         { username: updateUserArgs.username },
         mockUser.id,
-        mockContext,
       );
       expect(result).toEqual({
         error: 'Already exist username',
@@ -212,7 +212,6 @@ describe('User Service', () => {
       const result = await userService.updateUser(
         { email: updateUserArgs.email },
         mockUser.id,
-        mockContext,
       );
       expect(result).toEqual({
         error: 'Already exist email',
@@ -221,13 +220,13 @@ describe('User Service', () => {
 
     it('Error : Same password', async () => {
       userRepo.findOne.mockResolvedValueOnce(mockUser);
+      userRepo.findOne.mockResolvedValueOnce({ password: mockUser.password });
       bcryptCompare = jest.fn().mockReturnValue(true);
       (bcrypt.compare as jest.Mock) = bcryptCompare;
 
       const result = await userService.updateUser(
         { password: updateUserArgs.password },
         mockUser.id,
-        mockContext,
       );
       expect(result).toEqual({
         error: 'Same password',
@@ -240,7 +239,6 @@ describe('User Service', () => {
       const result = await userService.updateUser(
         { username: updateUserArgs.username },
         mockUser.id,
-        mockContext,
       );
       expect(result).toEqual({
         error: 'Unexpected error',
@@ -249,14 +247,15 @@ describe('User Service', () => {
 
     it('Change user info', async () => {
       userRepo.findOne.mockResolvedValueOnce(mockUser);
-      userRepo.findOne.mockResolvedValue(null);
+      userRepo.findOne.mockResolvedValueOnce(null);
+      userRepo.findOne.mockResolvedValueOnce(null);
+      userRepo.findOne.mockResolvedValueOnce({ password: mockUser.password });
       bcryptCompare = jest.fn().mockReturnValue(false);
       (bcrypt.compare as jest.Mock) = bcryptCompare;
 
       const result = await userService.updateUser(
         { ...updateUserArgs },
         mockUser.id,
-        mockContext,
       );
       expect(result).toEqual({
         ok: true,
@@ -265,19 +264,57 @@ describe('User Service', () => {
   });
 
   describe('deleteUser', () => {
-    let mockContext: IContext;
+    let bcryptCompare: jest.Mock;
+
+    it('Error : User not found', async () => {
+      userRepo.findOne.mockResolvedValue(null);
+
+      const result = await userService.deleteUser(
+        { password: mockUser.password },
+        mockUser.id,
+      );
+      expect(result).toEqual({
+        error: 'User not found',
+      });
+    });
+
+    it('Error : Check password again', async () => {
+      userRepo.findOne.mockResolvedValue({ password: mockUser.password });
+
+      bcryptCompare = jest.fn().mockReturnValue(false);
+      (bcrypt.compare as jest.Mock) = bcryptCompare;
+
+      const result = await userService.deleteUser(
+        { password: 'incorrectPassword' },
+        mockUser.id,
+      );
+      expect(result).toEqual({
+        error: 'Check password again',
+      });
+    });
 
     it('Error : Unexpected error', async () => {
-      userRepo.delete.mockRejectedValue(new Error());
+      userRepo.findOne.mockRejectedValue(new Error());
 
-      const result = await userService.deleteUser(mockUser.id, mockContext);
+      const result = await userService.deleteUser(
+        { password: mockUser.password },
+        mockUser.id,
+      );
       expect(result).toEqual({
         error: 'Unexpected error',
       });
     });
 
     it('Delete user & Logout', async () => {
-      const result = await userService.deleteUser(mockUser.id, mockContext);
+      userRepo.findOne.mockResolvedValue({ password: mockUser.password });
+
+      bcryptCompare = jest.fn().mockReturnValue(true);
+      (bcrypt.compare as jest.Mock) = bcryptCompare;
+
+      const result = await userService.deleteUser(
+        { password: mockUser.password },
+        mockUser.id,
+      );
       expect(result).toEqual({
         ok: true,
       });
