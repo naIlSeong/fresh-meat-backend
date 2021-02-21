@@ -19,7 +19,7 @@ export class User extends CommonEntity {
   @IsEmail()
   email: string;
 
-  @Column()
+  @Column({ select: false })
   @Field((type) => String)
   @IsString()
   @Length(8)

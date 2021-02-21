@@ -155,7 +155,6 @@ export class UserService {
       }
 
       await this.userRepo.save(user);
-      await this.logout(context);
       return {
         ok: true,
       };

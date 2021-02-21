@@ -139,3 +139,22 @@ Set-cookie not working when executing login mutation in playground
 
 **Solution**
 In playground "request.credentials": `"omit"` &rarr; `"same-origin"`
+
+---
+
+#### **Issue #2**
+
+In updateUser the hashed password is hashed again during `updateUser`
+
+**Solution**
+Update `user.entity.ts`
+
+```
+...
+  @Column({ select: false })
+  @Field((type) => String)
+  @IsString()
+  @Length(8)
+  password: string;
+
+```
