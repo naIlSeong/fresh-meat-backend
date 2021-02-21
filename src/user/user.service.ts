@@ -9,6 +9,7 @@ import * as bcrypt from 'bcrypt';
 import { UserDetailDto, UserDetailOutput } from './dto/user-detail.dto';
 import { IContext, ISession } from 'src/common/common.interface';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { DeleteUserDto } from './dto/delete-user.dto';
 
 @Injectable()
 export class UserService {
@@ -122,7 +123,6 @@ export class UserService {
   async updateUser(
     { username, email, password }: UpdateUserDto,
     userId: number,
-    context: IContext,
   ): Promise<CommonOutput> {
     try {
       const user = await this.userRepo.findOne({ id: userId });
@@ -147,7 +147,14 @@ export class UserService {
       }
 
       if (password) {
-        const isSamePassword = await bcrypt.compare(password, user.password);
+        const currentPassword = await this.userRepo.findOne({
+          where: { id: userId },
+          select: ['password'],
+        });
+        const isSamePassword = await bcrypt.compare(
+          password,
+          currentPassword.password,
+        );
         if (isSamePassword) {
           return {
             error: 'Same password',
@@ -157,7 +164,6 @@ export class UserService {
       }
 
       await this.userRepo.save(user);
-      await this.logout(context);
       return {
         ok: true,
       };
@@ -168,10 +174,30 @@ export class UserService {
     }
   }
 
-  async deleteUser(userId: number, context: IContext): Promise<CommonOutput> {
+  async deleteUser(
+    { password }: DeleteUserDto,
+    userId: number,
+  ): Promise<CommonOutput> {
     try {
+      const user = await this.userRepo.findOne({
+        where: { id: userId },
+        select: ['password'],
+      });
+
+      if (!user) {
+        return {
+          error: 'User not found',
+        };
+      }
+
+      const isSamePassword = await bcrypt.compare(password, user.password);
+      if (!isSamePassword) {
+        return {
+          error: 'Check password again',
+        };
+      }
+
       await this.userRepo.delete({ id: userId });
-      await this.logout(context);
 
       return {
         ok: true,

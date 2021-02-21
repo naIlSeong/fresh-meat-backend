@@ -4,6 +4,7 @@ import { CommonOutput } from 'src/common/common.dto';
 import { IContext } from 'src/common/common.interface';
 import { CurrentUser } from '../auth/auth.decorator';
 import { CreateUserDto } from './dto/create-user.dto';
+import { DeleteUserDto } from './dto/delete-user.dto';
 import { LoginDto, LoginOutput } from './dto/login-dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserDetailDto, UserDetailOutput } from './dto/user-detail.dto';
@@ -50,13 +51,15 @@ export class UserResolver {
   updateUser(
     @Args('input') updateUserDto: UpdateUserDto,
     @CurrentUser() user: User,
-    @Context() context: IContext,
   ) {
-    return this.userService.updateUser(updateUserDto, user.id, context);
+    return this.userService.updateUser(updateUserDto, user.id);
   }
 
   @Mutation((returns) => CommonOutput)
-  deleteUser(@CurrentUser() user: User, @Context() context: IContext) {
-    return this.userService.deleteUser(user.id, context);
+  deleteUser(
+    @Args('input') deleteUserDto: DeleteUserDto,
+    @CurrentUser() user: User,
+  ) {
+    return this.userService.deleteUser(deleteUserDto, user.id);
   }
 }
