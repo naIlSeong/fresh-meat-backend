@@ -52,7 +52,10 @@ export class UserService {
     context: IContext,
   ): Promise<LoginOutput> {
     try {
-      const user = await this.userRepo.findOne({ email });
+      const user = await this.userRepo.findOne({
+        where: { email },
+        select: ['password', 'id', 'username', 'email'],
+      });
       if (!user) {
         return {
           error: 'Email not found',
@@ -123,7 +126,6 @@ export class UserService {
   ): Promise<CommonOutput> {
     try {
       const user = await this.userRepo.findOne({ id: userId });
-
       if (username) {
         const exist = await this.userRepo.findOne({ username });
         if (exist && exist.id !== user.id) {
@@ -155,6 +157,7 @@ export class UserService {
       }
 
       await this.userRepo.save(user);
+      await this.logout(context);
       return {
         ok: true,
       };
