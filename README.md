@@ -158,3 +158,21 @@ Update `user.entity.ts`
   password: string;
 
 ```
+
+---
+
+#### **Issue #3**
+
+Can't read session type during unit test
+
+**Solution**
+Update `SessionData` of `express-session` in `common.interface.ts` and delete `ISession`
+
+```
+...
+declare module 'express-session' {
+  interface SessionData extends session.Session {
+    user?: User;
+  }
+}
+```

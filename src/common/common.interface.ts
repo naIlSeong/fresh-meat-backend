@@ -1,12 +1,14 @@
-import { Request, Response } from 'express';
 import session from 'express-session';
 import { User } from 'src/user/user.entity';
+import express from 'express';
 
 export interface IContext {
-  req: Request;
-  res: Response;
+  req: express.Request;
+  res: express.Response;
 }
 
-export interface ISession extends session.Session {
-  user?: User;
+declare module 'express-session' {
+  interface SessionData extends session.Session {
+    user?: User;
+  }
 }

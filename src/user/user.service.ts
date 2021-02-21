@@ -7,9 +7,9 @@ import { LoginDto, LoginOutput } from './dto/login-dto';
 import { User } from './user.entity';
 import * as bcrypt from 'bcrypt';
 import { UserDetailDto, UserDetailOutput } from './dto/user-detail.dto';
-import { IContext, ISession } from 'src/common/common.interface';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { DeleteUserDto } from './dto/delete-user.dto';
+import { SessionData } from 'express-session';
 
 @Injectable()
 export class UserService {
@@ -50,7 +50,7 @@ export class UserService {
 
   async login(
     { email, password }: LoginDto,
-    context: IContext,
+    session: SessionData,
   ): Promise<LoginOutput> {
     try {
       const user = await this.userRepo.findOne({
@@ -70,11 +70,9 @@ export class UserService {
         };
       }
 
-      const session: ISession = context.req.session;
       session.user = user;
       return {
         ok: true,
-        sessionId: session.id,
       };
     } catch (error) {
       return {
@@ -83,9 +81,9 @@ export class UserService {
     }
   }
 
-  async logout(context: IContext): Promise<CommonOutput> {
+  async logout(session: SessionData): Promise<CommonOutput> {
     try {
-      context.req.session.destroy((err) => {
+      session.destroy((err) => {
         if (err) {
           throw new Error(err);
         }

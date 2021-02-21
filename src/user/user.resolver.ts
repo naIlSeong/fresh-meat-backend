@@ -34,12 +34,12 @@ export class UserResolver {
     @Args('input') loginDto: LoginDto,
     @Context() context: IContext,
   ): Promise<LoginOutput> {
-    return this.userService.login(loginDto, context);
+    return this.userService.login(loginDto, context.req.session);
   }
 
   @Mutation((returns) => CommonOutput)
   logout(@Context() context: IContext): Promise<CommonOutput> {
-    return this.userService.logout(context);
+    return this.userService.logout(context.req.session);
   }
 
   @Query((returns) => UserDetailOutput)
