@@ -11,6 +11,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { DeleteUserDto } from './dto/delete-user.dto';
 import { SessionData } from 'express-session';
 import { Product, Progress } from 'src/product/product.entity';
+import { MyProfileOutput } from './dto/my-profile.dto';
 
 @Injectable()
 export class UserService {
@@ -130,6 +131,34 @@ export class UserService {
         user,
         waiting,
         inProgress,
+      };
+    } catch (error) {
+      return {
+        error: 'Unexpected error',
+      };
+    }
+  }
+
+  async myProfile(userId: number): Promise<MyProfileOutput> {
+    try {
+      const user = await this.userRepo.findOne({ id: userId });
+      const uploadedProduct = await this.productRepo.find({
+        seller: {
+          id: userId,
+        },
+        progress: Progress.Closed || Progress.Completed || Progress.Paid,
+      });
+
+      const biddedProduct = await this.productRepo.find({
+        bidder: {
+          id: userId,
+        },
+      });
+
+      return {
+        ok: true,
+        uploadedProduct,
+        biddedProduct,
       };
     } catch (error) {
       return {

@@ -6,6 +6,7 @@ import { CurrentUser } from '../auth/auth.decorator';
 import { CreateUserDto } from './dto/create-user.dto';
 import { DeleteUserDto } from './dto/delete-user.dto';
 import { LoginDto, LoginOutput } from './dto/login-dto';
+import { MyProfileOutput } from './dto/my-profile.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserDetailDto, UserDetailOutput } from './dto/user-detail.dto';
 import { User } from './user.entity';
@@ -44,8 +45,15 @@ export class UserResolver {
   }
 
   @Query((returns) => UserDetailOutput)
-  userDetail(@Args('input') userDetailDto: UserDetailDto) {
+  userDetail(
+    @Args('input') userDetailDto: UserDetailDto,
+  ): Promise<UserDetailOutput> {
     return this.userService.userDetail(userDetailDto);
+  }
+
+  @Query((returns) => MyProfileOutput)
+  myProfile(@CurrentUser() user: User): Promise<MyProfileOutput> {
+    return this.userService.myProfile(user.id);
   }
 
   @Mutation((returns) => CommonOutput)
