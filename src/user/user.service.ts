@@ -10,11 +10,14 @@ import { UserDetailDto, UserDetailOutput } from './dto/user-detail.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { DeleteUserDto } from './dto/delete-user.dto';
 import { SessionData } from 'express-session';
+import { Product, Progress } from 'src/product/product.entity';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User) private readonly userRepo: Repository<User>,
+    @InjectRepository(Product)
+    private readonly productRepo: Repository<Product>,
   ) {}
 
   async createUser({
@@ -107,9 +110,22 @@ export class UserService {
           error: 'User not found',
         };
       }
+
+      const waiting = await this.productRepo.find({
+        sellerId: user.id,
+        progress: Progress.Waiting,
+      });
+
+      const inProgress = await this.productRepo.find({
+        sellerId: user.id,
+        progress: Progress.InProgress,
+      });
+
       return {
         ok: true,
         user,
+        waiting,
+        inProgress,
       };
     } catch (error) {
       return {
