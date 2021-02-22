@@ -81,7 +81,7 @@ $ npm run test
 
 </br>
 <div style="text-align:center">
-  <img src="./images/fresh-meat-user-service-unit-test.png" />
+  <img src="./images/user-service-unit-test.png" />
 </div>
 <div style="text-align:center">
   <span style="font-weight:bold">
@@ -92,7 +92,7 @@ $ npm run test
   
 </br>
 <div style="text-align:center">
-  <img src="./images/fresh-meat-product-service-unit-test.png" />
+  <img src="./images/product-service-unit-test.png" />
 </div>
 <div style="text-align:center">
   <span style="font-weight:bold">
@@ -109,7 +109,7 @@ $ npm run test:cov
 
 </br>
 <div style="text-align:center">
-  <img src="./images/fresh-meat-unit-test-coverage.png" />
+  <img src="./images/unit-test-coverage.png" />
 </div>
 <div style="text-align:center">
   <span style="font-weight:bold">
