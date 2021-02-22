@@ -5,9 +5,11 @@ import { User } from './user.entity';
 import { UserService } from './user.service';
 import * as bcrypt from 'bcrypt';
 import { SessionData } from 'express-session';
+import { Product, Progress } from 'src/product/product.entity';
 
 const mockRepo = () => ({
   findOne: jest.fn(),
+  find: jest.fn(),
   save: jest.fn(),
   create: jest.fn(),
   delete: jest.fn(),
@@ -20,6 +22,7 @@ type MockRepo<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
 describe('User Service', () => {
   let userService: UserService;
   let userRepo: MockRepo<User>;
+  let productRepo: MockRepo<Product>;
   let mockUser: User;
 
   beforeEach(async () => {
@@ -30,11 +33,16 @@ describe('User Service', () => {
           provide: getRepositoryToken(User),
           useValue: mockRepo(),
         },
+        {
+          provide: getRepositoryToken(Product),
+          useValue: mockRepo(),
+        },
       ],
     }).compile();
 
     userService = moduleRef.get<UserService>(UserService);
     userRepo = moduleRef.get(getRepositoryToken(User));
+    productRepo = moduleRef.get(getRepositoryToken(Product));
 
     mockUser = new User();
     mockUser.id = 1;
@@ -180,11 +188,31 @@ describe('User Service', () => {
       userRepo.findOne.mockResolvedValue({
         ...mockUser,
       });
+      productRepo.find.mockResolvedValueOnce([
+        { id: 1, sellerId: mockUser.id, progress: Progress.Waiting },
+        { id: 2, sellerId: mockUser.id, progress: Progress.Waiting },
+        { id: 3, sellerId: mockUser.id, progress: Progress.Waiting },
+      ]);
+      productRepo.find.mockResolvedValueOnce([
+        { id: 4, sellerId: mockUser.id, progress: Progress.InProgress },
+        { id: 5, sellerId: mockUser.id, progress: Progress.InProgress },
+        { id: 6, sellerId: mockUser.id, progress: Progress.InProgress },
+      ]);
 
       const result = await userService.userDetail({ userId: mockUser.id });
       expect(result).toEqual({
         ok: true,
         user: { ...mockUser },
+        waiting: [
+          { id: 1, sellerId: mockUser.id, progress: Progress.Waiting },
+          { id: 2, sellerId: mockUser.id, progress: Progress.Waiting },
+          { id: 3, sellerId: mockUser.id, progress: Progress.Waiting },
+        ],
+        inProgress: [
+          { id: 4, sellerId: mockUser.id, progress: Progress.InProgress },
+          { id: 5, sellerId: mockUser.id, progress: Progress.InProgress },
+          { id: 6, sellerId: mockUser.id, progress: Progress.InProgress },
+        ],
       });
     });
   });
