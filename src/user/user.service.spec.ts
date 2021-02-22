@@ -146,7 +146,16 @@ describe('User Service', () => {
     });
   });
 
-  it.todo('logout');
+  describe('logout', () => {
+    let mockSession: SessionData = { destroy: jest.fn() };
+
+    it('Logout & Destroy session', async () => {
+      const result = await userService.logout(mockSession);
+      expect(result).toEqual({
+        ok: true,
+      });
+    });
+  });
 
   describe('userDetail', () => {
     it('Error : User not found', async () => {

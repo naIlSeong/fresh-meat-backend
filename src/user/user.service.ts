@@ -85,7 +85,7 @@ export class UserService {
     try {
       session.destroy((err) => {
         if (err) {
-          throw new Error(err);
+          throw new Error('Error: Destroy session');
         }
       });
 
