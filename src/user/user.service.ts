@@ -112,12 +112,16 @@ export class UserService {
       }
 
       const waiting = await this.productRepo.find({
-        sellerId: user.id,
+        seller: {
+          id: userId,
+        },
         progress: Progress.Waiting,
       });
 
       const inProgress = await this.productRepo.find({
-        sellerId: user.id,
+        seller: {
+          id: userId,
+        },
         progress: Progress.InProgress,
       });
 
