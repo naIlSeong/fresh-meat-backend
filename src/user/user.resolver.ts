@@ -37,6 +37,7 @@ export class UserResolver {
     return this.userService.login(loginDto, context.req.session);
   }
 
+  @Public()
   @Mutation((returns) => CommonOutput)
   logout(@Context() context: IContext): Promise<CommonOutput> {
     return this.userService.logout(context.req.session);
