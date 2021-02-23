@@ -141,7 +141,6 @@ export class UserService {
 
   async myProfile(userId: number): Promise<MyProfileOutput> {
     try {
-      const user = await this.userRepo.findOne({ id: userId });
       const uploadedProduct = await this.productRepo.find({
         seller: {
           id: userId,
@@ -155,10 +154,33 @@ export class UserService {
         },
       });
 
+      const inProgressProduct: Product[] = [];
+      const closedProduct: Product[] = [];
+      const paidProduct: Product[] = [];
+      const completedProduct: Product[] = [];
+
+      biddedProduct.forEach((product) => {
+        if (product.progress === Progress.InProgress) {
+          inProgressProduct.push(product);
+        }
+        if (product.progress === Progress.Closed) {
+          closedProduct.push(product);
+        }
+        if (product.progress === Progress.Paid) {
+          paidProduct.push(product);
+        }
+        if (product.progress === Progress.Completed) {
+          completedProduct.push(product);
+        }
+      });
+
       return {
         ok: true,
         uploadedProduct,
-        biddedProduct,
+        inProgressProduct,
+        closedProduct,
+        paidProduct,
+        completedProduct,
       };
     } catch (error) {
       return {

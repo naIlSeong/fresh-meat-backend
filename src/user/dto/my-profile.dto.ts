@@ -8,5 +8,14 @@ export class MyProfileOutput extends CommonOutput {
   uploadedProduct?: Product[];
 
   @Field((type) => [Product], { nullable: true })
-  biddedProduct?: Product[];
+  inProgressProduct?: Product[];
+
+  @Field((type) => [Product], { nullable: true })
+  closedProduct?: Product[];
+
+  @Field((type) => [Product], { nullable: true })
+  paidProduct?: Product[];
+
+  @Field((type) => [Product], { nullable: true })
+  completedProduct?: Product[];
 }
