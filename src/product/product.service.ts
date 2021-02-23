@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 import { CreateBiddingDto } from './dto/create-bidding.dto';
 import { DeleteProductDto } from './dto/delete-product.dto';
 import { EditProductDto } from './dto/edit-product.dto';
+import { EditProgressDto } from './dto/edit-progress.dto';
 import {
   GetAllProductsDto,
   GetAllProductsOutput,
@@ -147,7 +148,7 @@ export class ProductService {
     try {
       const product = await this.productRepo.findOne({
         where: { id: productId },
-        relations: ['seller'],
+        relations: ['seller', 'bidder'],
       });
       if (!product) {
         return {
@@ -167,7 +168,7 @@ export class ProductService {
   }
 
   async editProgress(
-    { productId }: EditProductDto,
+    { productId }: EditProgressDto,
     user: User,
   ): Promise<CommonOutput> {
     try {

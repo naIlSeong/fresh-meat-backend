@@ -141,11 +141,23 @@ export class UserService {
 
   async myProfile(userId: number): Promise<MyProfileOutput> {
     try {
-      const uploadedProduct = await this.productRepo.find({
+      const uploadedProduct: Product[] = [];
+      const uploaded = await this.productRepo.find({
         seller: {
           id: userId,
         },
-        progress: Progress.Closed || Progress.Completed || Progress.Paid,
+      });
+
+      uploaded.forEach((product) => {
+        if (product.progress === Progress.Paid) {
+          uploadedProduct.push(product);
+        }
+        if (product.progress === Progress.Closed) {
+          uploadedProduct.push(product);
+        }
+        if (product.progress === Progress.Completed) {
+          uploadedProduct.push(product);
+        }
       });
 
       const biddedProduct = await this.productRepo.find({

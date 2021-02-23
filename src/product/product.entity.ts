@@ -50,7 +50,7 @@ export class Product extends CommonEntity {
   sellerId: number;
 
   @ManyToOne((type) => User, (user) => user.biddingProducts, { nullable: true })
-  @Field((type) => User)
+  @Field((type) => User, { nullable: true })
   bidder?: User;
 
   @RelationId((product: Product) => product.bidder)
