@@ -217,6 +217,54 @@ describe('User Service', () => {
     });
   });
 
+  describe('myProfile', () => {
+    it('Error : Unexpected error', async () => {
+      productRepo.find.mockRejectedValue(new Error());
+
+      const result = await userService.myProfile(mockUser.id);
+      expect(result).toEqual({
+        error: 'Unexpected error',
+      });
+    });
+
+    it('Find my products', async () => {
+      productRepo.find.mockResolvedValueOnce([
+        { id: 1, sellerId: mockUser.id, progress: Progress.Closed },
+        { id: 2, sellerId: mockUser.id, progress: Progress.Paid },
+        { id: 3, sellerId: mockUser.id, progress: Progress.Completed },
+      ]);
+
+      productRepo.find.mockResolvedValueOnce([
+        { id: 4, bidderId: mockUser.id, progress: Progress.InProgress },
+        { id: 5, bidderId: mockUser.id, progress: Progress.Closed },
+        { id: 6, bidderId: mockUser.id, progress: Progress.Completed },
+        { id: 7, bidderId: mockUser.id, progress: Progress.Paid },
+      ]);
+
+      const result = await userService.myProfile(mockUser.id);
+      expect(result).toEqual({
+        ok: true,
+        uploadedProduct: [
+          { id: 1, sellerId: mockUser.id, progress: Progress.Closed },
+          { id: 2, sellerId: mockUser.id, progress: Progress.Paid },
+          { id: 3, sellerId: mockUser.id, progress: Progress.Completed },
+        ],
+        inProgressProduct: [
+          { id: 4, bidderId: mockUser.id, progress: Progress.InProgress },
+        ],
+        closedProduct: [
+          { id: 5, bidderId: mockUser.id, progress: Progress.Closed },
+        ],
+        paidProduct: [
+          { id: 7, bidderId: mockUser.id, progress: Progress.Paid },
+        ],
+        completedProduct: [
+          { id: 6, bidderId: mockUser.id, progress: Progress.Completed },
+        ],
+      });
+    });
+  });
+
   describe('updateUser', () => {
     const updateUserArgs = {
       username: 'updatedUsername',
