@@ -2,13 +2,13 @@ import { Field, InputType, ObjectType } from '@nestjs/graphql';
 import { IsString } from 'class-validator';
 import { CommonEntity } from 'src/common/common.entity';
 import { Product } from 'src/product/product.entity';
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, OneToOne } from 'typeorm';
 
 @InputType('FileInputType', { isAbstract: true })
 @ObjectType('FileObjectType')
 @Entity()
 export class File extends CommonEntity {
-  @ManyToOne((type) => Product, (product) => product.pictures)
+  @OneToOne((type) => Product, (product) => product.picture)
   @Field((type) => Product)
   product: Product;
 

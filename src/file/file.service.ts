@@ -42,11 +42,9 @@ export class FileService {
         url: Location,
         key: Key,
       });
-      const pictures = product.pictures;
-      pictures.push(picture);
 
       await this.fileRepo.save(picture);
-      await this.productRepo.save({ ...product, pictures });
+      await this.productRepo.save({ ...product, picture });
 
       return {
         ok: true,

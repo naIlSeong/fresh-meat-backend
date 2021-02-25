@@ -39,7 +39,8 @@
 ## Todo
 
 - [ ] How many people participated in the auction
-- [ ] Improve editProduct
+- [ ] Improve editProduct (Image)
+- [ ] Improve deleteProduct (Delete image on S3)
 
 - **User Module**
 
