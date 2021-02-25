@@ -44,6 +44,7 @@ export class UserResolver {
     return this.userService.logout(context.req.session);
   }
 
+  @Public()
   @Query((returns) => UserDetailOutput)
   userDetail(
     @Args('input') userDetailDto: UserDetailDto,
