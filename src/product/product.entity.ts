@@ -20,8 +20,8 @@ export enum Progress {
 
 registerEnumType(Progress, { name: 'Progress' });
 
-@InputType({ isAbstract: true })
-@ObjectType()
+@InputType('ProductInputType', { isAbstract: true })
+@ObjectType('ProductObjectType')
 @Entity()
 export class Product extends CommonEntity {
   @Column()

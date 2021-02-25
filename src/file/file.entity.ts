@@ -4,8 +4,8 @@ import { CommonEntity } from 'src/common/common.entity';
 import { Product } from 'src/product/product.entity';
 import { Column, Entity, ManyToOne } from 'typeorm';
 
-@InputType({ isAbstract: true })
-@ObjectType()
+@InputType('FileInputType', { isAbstract: true })
+@ObjectType('FileObjectType')
 @Entity()
 export class File extends CommonEntity {
   @ManyToOne((type) => Product, (product) => product.pictures)

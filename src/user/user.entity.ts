@@ -5,8 +5,8 @@ import { BeforeInsert, BeforeUpdate, Column, Entity, OneToMany } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Product } from 'src/product/product.entity';
 
-@InputType({ isAbstract: true })
-@ObjectType()
+@InputType('UserInputType', { isAbstract: true })
+@ObjectType('UserObjectType')
 @Entity()
 export class User extends CommonEntity {
   @Column()

@@ -16,7 +16,10 @@ import {
   ProductDetailOutput,
 } from './dto/product-detail.dto';
 import { UpdateBiddingDto } from './dto/update-bidding.dto';
-import { UploadProductDto } from './dto/upload-product.dto';
+import {
+  UploadProductDto,
+  UploadProductOutput,
+} from './dto/upload-product.dto';
 import { Product } from './product.entity';
 import { ProductService } from './product.service';
 
@@ -24,11 +27,11 @@ import { ProductService } from './product.service';
 export class ProductResolver {
   constructor(private readonly productService: ProductService) {}
 
-  @Mutation((returns) => CommonOutput)
+  @Mutation((returns) => UploadProductOutput)
   uploadProduct(
     @Args('input') uploadProductDto: UploadProductDto,
     @CurrentUser() user: User,
-  ): Promise<CommonOutput> {
+  ): Promise<UploadProductOutput> {
     return this.productService.uploadProduct(uploadProductDto, user);
   }
 

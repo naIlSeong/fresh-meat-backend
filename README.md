@@ -39,6 +39,7 @@
 ## Todo
 
 - [ ] How many people participated in the auction
+- [ ] Improve editProduct
 
 - **User Module**
 

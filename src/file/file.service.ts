@@ -4,7 +4,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { S3 } from 'aws-sdk';
 import { CommonOutput } from 'src/common/common.dto';
 import { Product } from 'src/product/product.entity';
-import { User } from 'src/user/user.entity';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import { File } from './file.entity';
@@ -22,23 +21,9 @@ export class FileService {
     stream,
     filename: string,
     mimetype: string,
-    productId: number,
-    user: User,
+    product: Product,
   ): Promise<CommonOutput> {
     try {
-      const product = await this.productRepo.findOne({ id: productId });
-      if (!product) {
-        return {
-          error: 'Product not found',
-        };
-      }
-
-      if (product.sellerId !== user.id) {
-        return {
-          error: 'Not your product',
-        };
-      }
-
       const s3 = new S3();
       const { Location, Key } = await s3
         .upload({

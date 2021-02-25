@@ -17,7 +17,10 @@ import {
   ProductDetailOutput,
 } from './dto/product-detail.dto';
 import { UpdateBiddingDto } from './dto/update-bidding.dto';
-import { UploadProductDto } from './dto/upload-product.dto';
+import {
+  UploadProductDto,
+  UploadProductOutput,
+} from './dto/upload-product.dto';
 import { Product, Progress } from './product.entity';
 
 @Injectable()
@@ -31,7 +34,7 @@ export class ProductService {
   async uploadProduct(
     uploadProductDto: UploadProductDto,
     user: User,
-  ): Promise<CommonOutput> {
+  ): Promise<UploadProductOutput> {
     try {
       if (!uploadProductDto.productName) {
         return {
@@ -53,6 +56,7 @@ export class ProductService {
       await this.productRepo.save(product);
       return {
         ok: true,
+        product,
       };
     } catch (error) {
       return {
