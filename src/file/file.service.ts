@@ -5,6 +5,7 @@ import { S3 } from 'aws-sdk';
 import { CommonOutput } from 'src/common/common.dto';
 import { Product } from 'src/product/product.entity';
 import { Repository } from 'typeorm';
+import { ReadStream } from 'typeorm/platform/PlatformTools';
 import { v4 as uuid } from 'uuid';
 import { File } from './file.entity';
 
@@ -18,12 +19,14 @@ export class FileService {
   ) {}
 
   async uploadImage(
-    stream,
+    stream: ReadStream,
     filename: string,
     mimetype: string,
-    product: Product,
+    productId: number,
   ): Promise<CommonOutput> {
     try {
+      const product = await this.productRepo.findOne({ id: productId });
+
       const s3 = new S3();
       const { Location, Key } = await s3
         .upload({

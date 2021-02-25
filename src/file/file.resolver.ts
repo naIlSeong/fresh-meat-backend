@@ -13,9 +13,9 @@ export class FileResolver {
   async uploadImage(
     @Args({ name: 'file', type: () => GraphQLUpload })
     { createReadStream, filename, mimetype }: FileUpload,
-    @Args('product') product: Product,
+    @Args('productId') productId: number,
   ): Promise<CommonOutput> {
     const stream = createReadStream();
-    return this.fileService.uploadImage(stream, filename, mimetype, product);
+    return this.fileService.uploadImage(stream, filename, mimetype, productId);
   }
 }

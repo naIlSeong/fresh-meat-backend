@@ -56,7 +56,7 @@ export class ProductService {
       await this.productRepo.save(product);
       return {
         ok: true,
-        product,
+        productId: product.id,
       };
     } catch (error) {
       return {

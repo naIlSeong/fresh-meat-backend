@@ -15,6 +15,6 @@ export class UploadProductDto extends PartialType(
 
 @ObjectType()
 export class UploadProductOutput extends CommonOutput {
-  @Field((type) => Product, { nullable: true })
-  product?: Product;
+  @Field((type) => Number, { nullable: true })
+  productId?: number;
 }
