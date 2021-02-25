@@ -8,5 +8,6 @@ import { Product } from 'src/product/product.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([File, Product])],
   providers: [FileService, FileResolver],
+  exports: [FileService],
 })
 export class FileModule {}

@@ -7,6 +7,7 @@ import { Product } from 'src/product/product.entity';
 import { Repository } from 'typeorm';
 import { ReadStream } from 'typeorm/platform/PlatformTools';
 import { v4 as uuid } from 'uuid';
+import { DeleteImageDto } from './dto/delete-image.dto';
 import { File } from './file.entity';
 
 @Injectable()
@@ -56,7 +57,10 @@ export class FileService {
     }
   }
 
-  async deleteImage(fileKey: string): Promise<CommonOutput> {
+  async deleteImage({
+    fileId,
+    fileKey,
+  }: DeleteImageDto): Promise<CommonOutput> {
     try {
       const s3 = new S3();
 
@@ -71,6 +75,8 @@ export class FileService {
           }
         },
       );
+
+      await this.fileRepo.delete({ id: fileId });
 
       return {
         ok: true,

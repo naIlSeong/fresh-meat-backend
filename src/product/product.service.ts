@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { SchedulerRegistry } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CommonOutput } from 'src/common/common.dto';
+import { FileService } from 'src/file/file.service';
 import { User } from 'src/user/user.entity';
 import { Repository } from 'typeorm';
 import { CreateBiddingDto } from './dto/create-bidding.dto';
@@ -29,6 +30,7 @@ export class ProductService {
     @InjectRepository(Product)
     private readonly productRepo: Repository<Product>,
     private schedulerRegistry: SchedulerRegistry,
+    private readonly fileService: FileService,
   ) {}
 
   async uploadProduct(
@@ -91,6 +93,18 @@ export class ProductService {
         return {
           error: "Can't delete product",
         };
+      }
+
+      if (product.picture) {
+        const { error } = await this.fileService.deleteImage({
+          fileId: product.picture.id,
+          fileKey: product.picture.key,
+        });
+        if (error) {
+          return {
+            error,
+          };
+        }
       }
 
       await this.productRepo.delete({ id: productId });
