@@ -3,7 +3,6 @@ import { FileUpload } from 'graphql-upload';
 import { CommonOutput } from 'src/common/common.dto';
 import { FileService } from './file.service';
 import { GraphQLUpload } from 'apollo-server-express';
-import { Product } from 'src/product/product.entity';
 
 @Resolver()
 export class FileResolver {

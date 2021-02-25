@@ -50,7 +50,32 @@ export class FileService {
         ok: true,
       };
     } catch (error) {
-      console.log(error);
+      return {
+        error: 'Unexpected error',
+      };
+    }
+  }
+
+  async deleteImage(fileKey: string): Promise<CommonOutput> {
+    try {
+      const s3 = new S3();
+
+      s3.deleteObject(
+        {
+          Bucket: this.configService.get('AWS_BUCKET_NAME'),
+          Key: fileKey,
+        },
+        (err, data) => {
+          if (err) {
+            throw err;
+          }
+        },
+      );
+
+      return {
+        ok: true,
+      };
+    } catch (error) {
       return {
         error: 'Unexpected error',
       };
