@@ -7641,7 +7641,7 @@
         "affectsGlobalScope": false
       },
       "../src/app.module.ts": {
-        "version": "24a7dd69e99347650f1c02e1d1a8f37e5b848b4b766e533d57088604c7b4ab6b",
+        "version": "9345a97ea62ad2eedd0c2ed4735b72d9584c886c37500c8f011d5fc0cfb93a35",
         "signature": "b82491e2990291580288c5602d4c017238977749d52b17391f0e45d9a29be644",
         "affectsGlobalScope": false
       },
