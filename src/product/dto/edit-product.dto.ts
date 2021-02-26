@@ -7,4 +7,7 @@ export class EditProductDto extends PartialType(
 ) {
   @Field((type) => Number)
   productId: number;
+
+  @Field((type) => Boolean, { nullable: true, defaultValue: false })
+  deleteImage?: boolean;
 }

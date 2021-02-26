@@ -120,12 +120,19 @@ export class ProductService {
   }
 
   async editProduct(
-    editProductDto: EditProductDto,
+    {
+      productId,
+      productName,
+      description,
+      startPrice,
+      deleteImage,
+    }: EditProductDto,
     user: User,
   ): Promise<CommonOutput> {
     try {
       const product = await this.productRepo.findOne({
-        id: editProductDto.productId,
+        where: { id: productId },
+        relations: ['seller', 'bidder'],
       });
 
       if (!product) {
@@ -146,7 +153,26 @@ export class ProductService {
         };
       }
 
-      await this.productRepo.save({ ...product, ...editProductDto });
+      if (deleteImage) {
+        if (product.picture) {
+          const { error } = await this.fileService.deleteImage({
+            fileId: product.picture.id,
+            fileKey: product.picture.key,
+          });
+          if (error) {
+            return {
+              error: 'Unexpected error',
+            };
+          }
+        }
+      }
+
+      product.productName =
+        productName === '' ? product.productName : productName;
+      product.startPrice = !startPrice ? product.startPrice : startPrice;
+      product.description = description === '' ? null : description;
+
+      await this.productRepo.save(product);
       return {
         ok: true,
       };

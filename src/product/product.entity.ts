@@ -8,14 +8,7 @@ import { IsDateString, IsEnum, IsNumber, IsString } from 'class-validator';
 import { CommonEntity } from 'src/common/common.entity';
 import { File } from 'src/file/file.entity';
 import { User } from 'src/user/user.entity';
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToOne,
-  RelationId,
-} from 'typeorm';
+import { Column, Entity, ManyToOne, OneToOne, RelationId } from 'typeorm';
 
 export enum Progress {
   Waiting = 'Waiting',
@@ -46,7 +39,6 @@ export class Product extends CommonEntity {
     nullable: true,
     eager: true,
   })
-  @JoinColumn()
   @Field((type) => File, { nullable: true })
   picture?: File;
 
