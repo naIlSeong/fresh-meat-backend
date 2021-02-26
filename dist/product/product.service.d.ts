@@ -1,0 +1,30 @@
+import { SchedulerRegistry } from '@nestjs/schedule';
+import { CommonOutput } from 'src/common/common.dto';
+import { FileService } from 'src/file/file.service';
+import { User } from 'src/user/user.entity';
+import { Repository } from 'typeorm';
+import { CreateBiddingDto } from './dto/create-bidding.dto';
+import { DeleteProductDto } from './dto/delete-product.dto';
+import { EditProductDto } from './dto/edit-product.dto';
+import { EditProgressDto } from './dto/edit-progress.dto';
+import { GetAllProductsDto, GetAllProductsOutput } from './dto/get-all-products.dto';
+import { ProductDetailDto, ProductDetailOutput } from './dto/product-detail.dto';
+import { UpdateBiddingDto } from './dto/update-bidding.dto';
+import { UploadProductDto, UploadProductOutput } from './dto/upload-product.dto';
+import { Product } from './product.entity';
+export declare class ProductService {
+    private readonly productRepo;
+    private schedulerRegistry;
+    private readonly fileService;
+    constructor(productRepo: Repository<Product>, schedulerRegistry: SchedulerRegistry, fileService: FileService);
+    uploadProduct(uploadProductDto: UploadProductDto, user: User): Promise<UploadProductOutput>;
+    deleteProduct({ productId }: DeleteProductDto, user: User): Promise<CommonOutput>;
+    editProduct({ productId, productName, description, startPrice, deleteImage, }: EditProductDto, user: User): Promise<CommonOutput>;
+    productDetail({ productId, }: ProductDetailDto): Promise<ProductDetailOutput>;
+    editProgress({ productId }: EditProgressDto, user: User): Promise<CommonOutput>;
+    createBidding({ productId, startPrice }: CreateBiddingDto, user: User): Promise<CommonOutput>;
+    updateBidding({ productId, bidPrice }: UpdateBiddingDto, user: User): Promise<CommonOutput>;
+    createTimer(product: Product): void;
+    getWaitingProducts({ page, }: GetAllProductsDto): Promise<GetAllProductsOutput>;
+    getInProgressProducts({ page, }: GetAllProductsDto): Promise<GetAllProductsOutput>;
+}
