@@ -21,4 +21,9 @@ export class File extends CommonEntity {
   @Field((type) => String)
   @IsString()
   key: string;
+
+  @Column()
+  @Field((type) => String)
+  @IsString()
+  fileName: string;
 }

@@ -42,6 +42,7 @@ export class FileService {
         product,
         url: Location,
         key: Key,
+        fileName: filename,
       });
 
       await this.fileRepo.save(picture);

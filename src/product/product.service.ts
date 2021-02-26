@@ -140,10 +140,7 @@ export class ProductService {
         };
       }
 
-      if (
-        product.progress !== Progress.Waiting &&
-        product.progress !== Progress.Completed
-      ) {
+      if (product.progress !== Progress.Waiting) {
         return {
           error: "Can't edit product",
         };
