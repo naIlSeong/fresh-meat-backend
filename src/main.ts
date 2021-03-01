@@ -51,6 +51,8 @@ async function bootstrap() {
         httpOnly: false, // if true prevent client side JS from reading the cookie
         maxAge: 1000 * 60 * 60, // session max age in miliseconds
         sameSite: 'none',
+        domain:
+          process.env.NODE_ENV === 'production' ? process.env.DOMAIN : null,
       },
     }),
   );

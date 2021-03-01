@@ -49,6 +49,7 @@ import { File } from './file/file.entity';
         SSL_CERT_PATH: Joi.string(),
         SSL_KEY_PATH: Joi.string(),
         PORT: Joi.string(),
+        DOMAIN: Joi.string(),
       }),
     }),
     TypeOrmModule.forRoot({

@@ -178,3 +178,28 @@ declare module 'express-session' {
   }
 }
 ```
+
+---
+
+#### **Issue #4**
+
+Cookie is set in the frontend but cannot be read
+
+**Solution**
+
+Update `express-session` setting in `main.ts` like:
+
+```
+  app.use(
+    session({
+      ...
+      cookie: {
+        ...
+        domain:
+          process.env.NODE_ENV === 'production' ? process.env.DOMAIN : null,
+      },
+    }),
+  );
+```
+
+docs: https://developer.mozilla.org/ko/docs/Web/HTTP/Headers/Set-Cookie
