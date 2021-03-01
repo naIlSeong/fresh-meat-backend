@@ -46,6 +46,7 @@ async function bootstrap() {
             httpOnly: false,
             maxAge: 1000 * 60 * 60,
             sameSite: 'none',
+            domain: process.env.NODE_ENV === 'production' ? process.env.DOMAIN : null,
         },
     }));
     app.useGlobalPipes(new common_1.ValidationPipe());
