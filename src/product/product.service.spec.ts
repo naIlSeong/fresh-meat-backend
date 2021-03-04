@@ -1,6 +1,7 @@
 import { SchedulerRegistry } from '@nestjs/schedule';
 import { Test } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { FileService } from 'src/file/file.service';
 import { User } from 'src/user/user.entity';
 import { Repository } from 'typeorm';
 import { Product, Progress } from './product.entity';
@@ -12,6 +13,10 @@ const mockRepo = () => ({
   findOne: jest.fn(),
   delete: jest.fn(),
   findAndCount: jest.fn(),
+});
+
+const mockFileService = () => ({
+  deleteImage: jest.fn(),
 });
 
 const mockSchedulerRegistry = () => ({
@@ -26,6 +31,7 @@ type MockScheduler<T = any> = Record<keyof T, jest.Mock>;
 
 describe('ProductService', () => {
   let productService: ProductService;
+  let fileService: FileService;
   let productRepo: MockRepo<Product>;
   let mockUser: User;
   let otherUser: User;
@@ -38,6 +44,10 @@ describe('ProductService', () => {
       providers: [
         ProductService,
         {
+          provide: FileService,
+          useValue: mockFileService(),
+        },
+        {
           provide: getRepositoryToken(Product),
           useValue: mockRepo(),
         },
@@ -49,6 +59,7 @@ describe('ProductService', () => {
     }).compile();
 
     productService = moduleRef.get<ProductService>(ProductService);
+    fileService = moduleRef.get<FileService>(FileService);
     productRepo = moduleRef.get(getRepositoryToken(Product));
     schedulerRegistry = moduleRef.get(SchedulerRegistry);
 
@@ -107,6 +118,12 @@ describe('ProductService', () => {
     });
 
     it('Upload new product', async () => {
+      productRepo.create.mockReturnValue({
+        id: mockProduct.id,
+        productName: mockProduct.productName,
+        startPrice: mockProduct.startPrice,
+      });
+
       const result = await productService.uploadProduct(
         {
           productName: mockProduct.productName,
@@ -116,6 +133,7 @@ describe('ProductService', () => {
       );
       expect(result).toEqual({
         ok: true,
+        productId: mockProduct.id,
       });
       expect(productRepo.create).toBeCalled();
       expect(productRepo.save).toBeCalled();
