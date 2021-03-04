@@ -74,6 +74,7 @@ export class FileService {
           if (err) {
             throw err;
           }
+          console.log('S3 deleteObject Error: ', data);
         },
       );
 
