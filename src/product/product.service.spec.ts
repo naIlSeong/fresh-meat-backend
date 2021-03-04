@@ -297,6 +297,28 @@ describe('ProductService', () => {
       });
     });
 
+    it('Error : Delete Image', async () => {
+      productRepo.findOne.mockResolvedValue({
+        ...mockProduct,
+        seller: mockUser,
+        sellerId: mockUser.id,
+        progress: Progress.Waiting,
+        picture: mockPicture,
+      });
+
+      fileService.deleteImage.mockResolvedValue({
+        error: 'Unexpected error',
+      });
+
+      const result = await productService.editProduct(
+        { ...editProductArgs, deleteImage: true },
+        mockUser,
+      );
+      expect(result).toEqual({
+        error: 'Unexpected error',
+      });
+    });
+
     it('Error : Unexpected error', async () => {
       productRepo.findOne.mockRejectedValue(new Error());
 
