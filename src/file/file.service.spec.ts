@@ -4,6 +4,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { S3 } from 'aws-sdk';
 import { Product } from 'src/product/product.entity';
 import { Repository } from 'typeorm';
+import { ReadStream } from 'fs-capacitor';
 import { File } from './file.entity';
 import { FileService } from './file.service';
 
@@ -18,15 +19,15 @@ const mockConfigService = () => ({
   get: jest.fn(),
 });
 
-const mockS3 = () => ({
-  upload: jest.fn(),
+const mockS3 = {
+  upload: jest.fn().mockReturnThis(),
   promise: jest.fn(),
   deleteObject: jest.fn(),
-});
+};
 
 jest.mock('aws-sdk', () => {
   return {
-    S3: jest.fn(() => mockS3()),
+    S3: jest.fn(() => mockS3),
   };
 });
 
@@ -39,6 +40,8 @@ describe('FileService', () => {
   let fileRepo: MockRepo<File>;
   let productRepo: MockRepo<Product>;
   let mockFile: File;
+  let mockProduct: Product;
+  let mockStream: ReadStream;
 
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -67,10 +70,63 @@ describe('FileService', () => {
     mockFile = new File();
     mockFile.id = 3;
     mockFile.key = 'MockKey';
+
+    mockProduct = new Product();
+    mockProduct.id = 4;
   });
 
   it('Should be defined', () => {
     expect(fileService).toBeDefined();
+  });
+
+  describe('uploadImage', () => {
+    // const uploadImageArgs = {
+    //   mockFilename: 'MockFilename',
+    //   mockMimetype: 'image/png',
+    // };
+    // it('Error : Unexpected error', async () => {
+    //   productRepo.findOne.mockRejectedValue(new Error());
+    //   const result = await fileService.uploadImage(
+    //     mockStream,
+    //     uploadImageArgs.mockFilename,
+    //     uploadImageArgs.mockMimetype,
+    //     mockProduct.id,
+    //   );
+    //   expect(result).toEqual({
+    //     error: 'Unexpected error',
+    //   });
+    // });
+    // it('Upload image in S3', async () => {
+    //   productRepo.findOne.mockResolvedValue(mockProduct);
+    //   const mockedS3 = new S3({
+    //     accessKeyId: 'MOCK_ACCESS_ID',
+    //     secretAccessKey: 'MOCK_SECRET_KEY',
+    //   });
+    //   const uploadOutput = await mockedS3.upload({
+    //     Bucket: 'mockBucket',
+    //     Body: mockStream,
+    //     Key: uploadImageArgs.mockFilename,
+    //     ContentType: uploadImageArgs.mockMimetype,
+    //   });
+    //   fileRepo.create.mockReturnValue({
+    //     product: mockProduct,
+    //     url: uploadOutput.Location,
+    //     key: uploadOutput.Key,
+    //     filename: uploadImageArgs.mockFilename,
+    //   });
+    //   const result = await fileService.uploadImage(
+    //     mockStream,
+    //     uploadImageArgs.mockFilename,
+    //     uploadImageArgs.mockMimetype,
+    //     mockProduct.id,
+    //   );
+    //   expect(result).toEqual({
+    //     ok: true,
+    //   });
+    //   expect(fileRepo.create).toBeCalledTimes(1);
+    //   expect(fileRepo.save).toBeCalledTimes(1);
+    //   expect(productRepo.save).toBeCalledTimes(1);
+    // });
   });
 
   describe('deleteImage', () => {

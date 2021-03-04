@@ -1,123 +1,135 @@
-# Fresh Meat
+# Fresh meat
+
+팔고 싶은 상품을 경매로 사고팔 수 있도록 중개해 주는 서비스
 
 ---
 
-## Table of contents
+## Table of Contents
 
-- [General info](#general-info)
-- [Structure](#structure)
-- [Todo](#todo)
-- [Test](#test)
+- [General Info](#general-Info)
+- [Schema](#schema)
+  - [User](#user)
+  - [Product](#product)
+  - [File](#file)
+- [Unit Test](#unit-test)
+  - [User Service](#user-service)
+  - [Product Service](#product-service)
+  - [File Service](#file-service)
+  - [Coverage](#coverage)
 - [Memo](#memo)
 
 ---
 
-## General info
+## General Info
 
-<a href="https://nestjs.com/" target="_blank">NestJS</a>, <a href="https://graphql.org/" target="_blank">GraphQL</a>, <a href="https://typeorm.io/#/" target="_blank">TypeORM</a>, <a href="https://www.postgresql.org/" target="_blank">PostgreSQL</a> and <a href="https://redis.io/" target="_blank">Redis</a>
-
----
-
-## Structure
-
-- **User**
-
-  - Email or Phone number
-  - Password
-    <br>
-
-- **Product**
-  - Seller
-  - Bidder
-  - Start price
-  - Bid price
-  - Remaining time
-  - Progress (enum)
+프레임워크로 <a href="https://nestjs.com/" target="_blank">NestJS</a>를 사용해서 <a href="https://graphql.org/" target="_blank">GraphQL</a> API를 구현했습니다. 데이터베이스로 <a href="https://www.postgresql.org/" target="_blank">PostgreSQL</a>을 사용하고 ORM은 <a href="https://typeorm.io/#/" target="_blank">TypeORM</a>을 사용했습니다. Session Storage로 사용하는 <a href="https://redis.io/" target="_blank">Redis</a>에 로그인한 사용자의 정보를 저장합니다.
 
 ---
 
-## Todo
+## Schema
 
-- [ ] How many people participated in the auction
-- [ ] Improve editProduct (Image)
-- [ ] Improve deleteProduct (Delete image on S3)
+하나의 `User`는 여러 개의 `sellingProducts`와 `1:N` 관계이고, `biddingProducts`와도 마찬가지로 `1:N` 관계입니다. `Product` 경매(거래) 진행 상태를 나타내는 `Progress`는 `Waiting`, `InProgress`, `Closed`, `Paid`, 그리고 `Completed` 중 하나입니다. 또한 `Product`는 하나의 이미지로써 `File`와 1:1 관계입니다.
 
-- **User Module**
+### User
 
-  - [x] Create User
-  - [x] Login
-  - [x] User Detail
-  - [x] Update User
-  - [x] Delete User
-        <br>
+```User Entity
+type User {
+  id: Float!
 
-- **Product Module**
-  - [x] Upload Product
-  - [x] Delete Product
-  - [x] Edit Product
-  - [x] Bid on Product
-    - [x] Create Bidding
-    - [x] Update Bidding
-    - [x] Finish Bidding
-  - [x] Product Detail
-  - [x] Edit Progress
-    - Waiting
-    - InProgress
-    - Closed (Waiting for payment)
-    - Paid (Waiting for confirmation)
-    - Completed
-  - [x] Get Waiting Products
-  - [x] Get InProgress Products
+  createdAt: DateTime!
+
+  updatedAt: DateTime!
+
+  username: String!
+
+  email: String!
+
+  password: String!
+
+  // OneToMany
+  sellingProducts: [Product!]
+
+  // OneToMany
+  biddingProducts: [Product!]
+}
+
+```
+
+### Product
+
+```Product Entity
+type ProductObjectType {
+  id: Float!
+
+  createdAt: DateTime!
+
+  updatedAt: DateTime!
+
+  productName: String!
+
+  description: String
+
+  // OneToOne
+  picture: File
+
+  // ManyToOne
+  seller: User!
+
+  // ManyToOne
+  bidder: User
+
+  startPrice: Float!
+
+  bidPrice: Float
+
+  remainingTime: DateTime
+
+  progress: Progress!
+}
+```
+
+### File
+
+```File Entity
+type FileObjectType {
+  id: Float!
+
+  createdAt: DateTime!
+
+  updatedAt: DateTime!
+
+  // OneToOne
+  product: Product!
+
+  url: String!
+
+  key: String!
+
+  fileName: String!
+}
+```
 
 ---
 
-## Test
+## Unit Test
 
-**To run test this project:**
+유닛 테스트를 위해 자바스크립트 테스팅 프레임워크인 <a href="https://jestjs.io/" target="_blank">Jest</a>를 사용했습니다.
 
-```
-// Unit Test
+### User Service
 
-$ npm run test
-```
+<img src="./images/user-service-unit-test.png" />
 
-</br>
-<div style="text-align:center">
-  <img src="./images/user-service-unit-test-3.png" />
-</div>
-<div style="text-align:center">
-  <span style="font-weight:bold">
-    User Service
-  </span>
-</div>
-</br>
-  
-</br>
-<div style="text-align:center">
-  <img src="./images/product-service-unit-test.png" />
-</div>
-<div style="text-align:center">
-  <span style="font-weight:bold">
-    Product Service
-  </span>
-</div>
-</br>
+### Product Service
 
-```
-// Unit Test Coverage
+<img src="./images/product-service-unit-test.png" />
 
-$ npm run test:cov
-```
+### File Service
 
-</br>
-<div style="text-align:center">
-  <img src="./images/unit-test-coverage-3.png" />
-</div>
-<div style="text-align:center">
-  <span style="font-weight:bold">
-    Unit Test Coverage
-  </span>
-</div>
+<img src="./images/file-service-unit-test.png" />
+
+### Coverage
+
+<img src="./images/unit-test-coverage.png" />
 
 ---
 
