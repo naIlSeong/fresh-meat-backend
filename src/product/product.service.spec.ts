@@ -1,6 +1,7 @@
 import { SchedulerRegistry } from '@nestjs/schedule';
 import { Test } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { File } from 'src/file/file.entity';
 import { FileService } from 'src/file/file.service';
 import { User } from 'src/user/user.entity';
 import { Repository } from 'typeorm';
@@ -31,12 +32,12 @@ type MockScheduler<T = any> = Record<keyof T, jest.Mock>;
 
 describe('ProductService', () => {
   let productService: ProductService;
-  let fileService: FileService;
+  let fileService: MockScheduler<FileService>;
   let productRepo: MockRepo<Product>;
   let mockUser: User;
   let otherUser: User;
   let mockProduct: Product;
-
+  let mockPicture: File;
   let schedulerRegistry: MockScheduler<SchedulerRegistry>;
 
   beforeEach(async () => {
@@ -59,7 +60,7 @@ describe('ProductService', () => {
     }).compile();
 
     productService = moduleRef.get<ProductService>(ProductService);
-    fileService = moduleRef.get<FileService>(FileService);
+    fileService = moduleRef.get(FileService);
     productRepo = moduleRef.get(getRepositoryToken(Product));
     schedulerRegistry = moduleRef.get(SchedulerRegistry);
 
@@ -73,6 +74,10 @@ describe('ProductService', () => {
     mockProduct.id = 7;
     mockProduct.productName = 'mockProductName';
     mockProduct.startPrice = 1000;
+
+    mockPicture = new File();
+    mockPicture.id = 9;
+    mockPicture.product = mockProduct;
 
     jest.useFakeTimers();
   });
@@ -183,6 +188,28 @@ describe('ProductService', () => {
       );
       expect(result).toEqual({
         error: "Can't delete product",
+      });
+    });
+
+    it('Error : Delete Image', async () => {
+      productRepo.findOne.mockResolvedValue({
+        ...mockProduct,
+        seller: mockUser,
+        sellerId: mockUser.id,
+        progress: Progress.Waiting,
+        picture: mockPicture,
+      });
+
+      fileService.deleteImage.mockResolvedValue({
+        error: 'Unexpected error',
+      });
+
+      const result = await productService.deleteProduct(
+        { productId: mockProduct.id },
+        mockUser,
+      );
+      expect(result).toEqual({
+        error: 'Unexpected error',
       });
     });
 
