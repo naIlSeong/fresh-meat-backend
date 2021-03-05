@@ -11,6 +11,9 @@
   - [User](#user)
   - [Product](#product)
   - [File](#file)
+- [API](#api)
+  - [Query](#query)
+  - [Mutation](#mutation)
 - [Unit Test](#unit-test)
   - [User Service](#user-service)
   - [Product Service](#product-service)
@@ -108,6 +111,281 @@ type FileObjectType {
   fileName: String!
 }
 ```
+
+---
+
+## API
+
+### Query
+
+_Note: 별도로 `Public`을 명시하지 않은 API는 `login`한 유저만 요청할 수 있습니다._
+
+**me**
+현재 로그인되어있는 유저의 정보를 요청
+
+- query
+
+```me query
+query {
+  me {
+    username
+    email
+    sellingProducts {
+      productName
+      progress
+    }
+    biddingProducts {
+      productName
+      progress
+    }
+  }
+}
+```
+
+- variables
+  _no variables_
+
+**userDetail**
+_Note: Public Query_
+유저 한명의 정보와 `progress`가 `Waiting`이거나 `InProgress`인 그 유저가 업로드한 `product`를 요청
+
+- query
+
+```userDetail
+query userDetail ($input: UserDetailDto!) {
+  userDetail(input: $input) {
+    ok
+    error
+    user {
+      email
+      username
+    }
+    inProgress {
+      productName
+    }
+    waiting {
+      productName
+      startPrice
+      progress
+    }
+  }
+}
+```
+
+- variables
+
+```userDetail_varialbles
+{
+  "input": {
+    "userId": 1
+  }
+}
+```
+
+**myProfile**
+`progress`가 `Paid`이거나 `Closed`이거나 `Completed`인 유저가 업로드한 `uploadedProduct`와 유저가 `bidding`한 `product`를 요청
+
+- query
+
+```myProfile
+query {
+  myProfile {
+    ok
+    error
+    uploadedProduct {
+      id
+      productName
+    }
+    inProgressProduct {
+      id
+      productName
+    }
+    closedProduct {
+      id
+      productName
+    }
+    paidProduct {
+      id
+      productName
+    }
+    completedProduct {
+      id
+      productName
+    }
+  }
+}
+```
+
+- variables
+  _no variables_
+
+**productDetail**
+_Note: Public Query_
+`product`의 정보와 `seller`, `bidder`의 정보를 요청
+
+- query
+
+```productDetail
+query productDetail ($input: ProductDetailDto!) {
+  productDetail (input: $input) {
+    ok
+    error
+    product {
+      id
+      productName
+      startPrice
+      picture {
+        url
+      }
+      seller {
+        username
+      }
+      bidder {
+        username
+      }
+    }
+  }
+}
+```
+
+- variables
+
+```productDetail_variables
+{
+  "input": {
+    "productId": 1
+  }
+}
+```
+
+**getWaitingProducts**
+_Note: Public Query_
+
+- query
+
+```getWaitingProducts
+query getWaitingProducts ($input: GetAllProductsDto!) {
+  getWaitingProducts (input: $input) {
+    ok
+    error
+    maxPage
+    products {
+      id
+      productName
+      picture {
+        url
+      }
+    }
+  }
+}
+```
+
+- variables
+
+```getWaitingProducts_variables
+{
+  "input": {
+    "page": 1
+  }
+}
+```
+
+**getInProgressProducts**
+_Note: Public Query_
+
+- query
+
+```getInProgressProducts
+query getWaitingProducts ($input: GetAllProductsDto!) {
+  getWaitingProducts (input: $input) {
+    ok
+    error
+    maxPage
+    products {
+      id
+      productName
+      picture {
+        url
+      }
+    }
+  }
+}
+```
+
+- variables
+
+```getInProgressProducts_variables
+{
+  "input": {
+    "page": 1
+  }
+}
+```
+
+### Mutation
+
+**createUser**
+_Note: Public Mutation_
+
+- query
+- variables
+
+**login**
+_Note: Public Mutation_
+
+- query
+- variables
+
+**logout**
+_Note: Public Mutation_
+
+- query
+- variables
+
+**updateUser**
+
+- query
+- variables
+
+**deleteUser**
+
+- query
+- variables
+
+**uploadProduct**
+
+- query
+- variables
+
+**deleteProduct**
+
+- query
+- variables
+
+**editProduct**
+
+- query
+- variables
+
+**editProgress**
+
+- query
+- variables
+
+**createBidding**
+
+- query
+- variables
+
+**updateBidding**
+
+- query
+- variables
+
+**uploadImage**
+
+- query
+- variables
 
 ---
 
