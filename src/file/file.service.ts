@@ -85,6 +85,7 @@ export class FileService {
       };
     } catch (error) {
       return {
+        // TODO: Delete image error : Unexpected error
         error: 'Unexpected error',
       };
     }

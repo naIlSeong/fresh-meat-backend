@@ -265,6 +265,7 @@ export class UserService {
         select: ['password'],
       });
 
+      // TODO: Delete & Argument: userId -> User
       if (!user) {
         return {
           error: 'User not found',

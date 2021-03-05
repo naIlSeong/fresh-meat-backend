@@ -116,9 +116,10 @@ type FileObjectType {
 
 ## API
 
-### Query
+> _Note_: 별도로 `Public`을 명시하지 않은 API는 `login`한 유저만 요청할 수 있습니다.
+> 요청이 실패하면 `"ok": false`이고 `error`메세지를 반환합니다. 만약 요청이 성공하면 `"ok": true`이고 `"error": null`입니다. 또한 예기치 못한 `error`는 모두 `"error": "Unexpected error"`를 반환합니다.
 
-_Note: 별도로 `Public`을 명시하지 않은 API는 `login`한 유저만 요청할 수 있습니다._
+### Query
 
 **me**
 
@@ -146,6 +147,7 @@ query {
 
 - Variables
   _no variables_
+- Error Response:
 
 **userDetail**
 
@@ -186,6 +188,9 @@ query userDetail ($input: UserDetailDto!) {
 }
 ```
 
+- Error Response:
+  - `User not found`: `userId`가 일치하는 `User`를 찾지 못함
+
 **myProfile**
 
 - Notes:
@@ -224,6 +229,8 @@ query {
 
 - Variables
   _no variables_
+
+- Error Response:
 
 **productDetail**
 
@@ -266,6 +273,9 @@ query productDetail ($input: ProductDetailDto!) {
 }
 ```
 
+- Error Response:
+  - `Product not found`: `productId`가 일치하는 `Product`를 찾지 못함
+
 **getWaitingProducts**
 
 - Notes:
@@ -300,6 +310,8 @@ query getWaitingProducts ($input: GetAllProductsDto!) {
   }
 }
 ```
+
+- Error Response:
 
 **getInProgressProducts**
 
@@ -336,6 +348,8 @@ query getInProgressProducts ($input: GetAllProductsDto!) {
 }
 ```
 
+- Error Response:
+
 ### Mutation
 
 **createUser**
@@ -345,7 +359,32 @@ query getInProgressProducts ($input: GetAllProductsDto!) {
   새로운 `User`를 생성
 
 - Query
+
+```createUser
+mutation createUser ($input: CreateUserDto!) {
+    createUser (input: $input) {
+        ok
+        error
+    }
+}
+```
+
 - Variables
+
+```createUser_variables
+{
+  "input": {
+    "username": "test",
+    "email": "test@mail.com",
+    "password": "1q2w3e4r"
+  }
+}
+
+```
+
+- Error Response:
+  - `Already exist username`: 이미 `username`이 동일한 `User`가 존재
+  - `Already exist email`: 이미 `email`이 동일한 `User`가 존재
 
 **login**
 
@@ -353,7 +392,30 @@ query getInProgressProducts ($input: GetAllProductsDto!) {
   _Public Mutation_
   `Session Storage`에 `Login`한 `User`의 정보를 저장
 - Query
+
+```login
+mutation login ($input: LoginDto!) {
+    login (input: $input) {
+        ok
+        error
+    }
+}
+```
+
 - Variables
+
+```login_variables
+{
+  "input": {
+    "email": "test@mail.com",
+    "password": "1q2w3e4r"
+  }
+}
+```
+
+- Error Response:
+  - `Email not found`: `email`이 일치하는 `User`가 없음
+  - `Wrong password`: `email`이 일치하는 `User`의 `password`와 일치하지않는 `password`
 
 **logout**
 
@@ -362,8 +424,21 @@ query getInProgressProducts ($input: GetAllProductsDto!) {
   `Session Storage`에 저장된 `User`의 정보를 삭제
 
 - Query
+
+```logout
+mutation logout {
+    logout {
+        ok
+        error
+    }
+}
+```
+
 - Variables
   _no variables_
+- Error Response:
+
+  - `Error: Destroy session`: `Session Storage`에 저장된 `User`의 정보를 삭제하는 과정에서 예기치 못한 에러가 발생
 
 **updateUser**
 
@@ -371,7 +446,32 @@ query getInProgressProducts ($input: GetAllProductsDto!) {
   `User`의 정보를 `update`
 
 - Query
+
+```updateUser
+mutation updateUser ($input: UpdateUserDto!) {
+    updateUser (input: $input) {
+        ok
+        error
+    }
+}
+```
+
 - Variables
+
+```updateUser_variables
+{
+  "input": {
+    "username": "newUserName",
+    "email": "new@mail.com",
+    "password": "q1w2e3r4"
+  }
+}
+```
+
+- Error Response:
+  - `Already exist username`: 변경하고자 하는 `username`이 이미 사용 중
+  - `Already exist email`: 변경하고자 하는 `email`이 이미 사용 중
+  - `Same password`: 현재의 `password`와 변경하고자 하는 `password`가 동일할 때
 
 **deleteUser**
 
@@ -379,15 +479,61 @@ query getInProgressProducts ($input: GetAllProductsDto!) {
   `User`의 정보를 `Database`와 `Session Storage`에서 삭제
 
 - Query
+
+```deleteUser
+mutation deleteUser ($input: DeleteUserDto!) {
+    deleteUser (input: $input) {
+        ok
+        error
+    }
+}
+```
+
 - Variables
+
+```deleteUser_variables
+{
+  "input": {
+    "password": "1q2w3e4r"
+  }
+}
+```
+
+- Error Response:
+  - `Check password again`: `password`가 일치하지 않음
 
 **uploadProduct**
 
 - Notes:
-  새로운 `Product`를 `upload`하고 `File`이 있으면 `uploadImage`를 호출해서 `S3`에 객체를 업로드
+  새로운 `Product`를 `upload`
 
 - Query
+
+```uploadProduct
+mutation uploadProduct ($input: UploadProductDto!) {
+    uploadProduct (input: $input) {
+        ok
+        error
+        productId
+    }
+}
+```
+
 - Variables
+
+```uploadProduct_variables
+{
+  "input": {
+    "productName": "IPhone 12",
+    "description": "Blue color",
+    "startPrice": 1000
+  }
+}
+```
+
+- Error Response:
+  - `Product name is required`: `productName`이 존재하지 않음
+  - `Start price is required`: `startPrice`가 존재하지 않음
 
 **deleteProduct**
 
@@ -395,15 +541,65 @@ query getInProgressProducts ($input: GetAllProductsDto!) {
   `Product`를 삭제하고 `File`이 있으면 `deleteImage`를 호출해서 `S3`에서 객체를 삭제
 
 - Query
+
+```deleteProduct
+mutation deleteProduct ($input: DeleteProductDto!) {
+    deleteProduct (input: $input) {
+        ok
+        error
+    }
+}
+```
+
 - Variables
+
+```deleteProduct_variables
+{
+  "input": {
+    "productId": 1
+  }
+}
+```
+
+- Error Response:
+  - `Product not found`: `productId`가 일치하는 `Product`를 찾을 수 없음
+  - `Not your product`: `Product`의 `seller`가 현재 로그인한 `User`가 아님
+  - `Can't delete product`: `progress`가 `Waiting`이거나 `Completed`가 아님
 
 **editProduct**
 
 - Notes:
-  `Product`의 정보를 `update`
+  `Product`의 정보를 `update`하고 `deleteImage`가 `true`이면 `deleteImage`를 호출
 
 - Query
+
+```editProduct
+mutation editProduct ($input: EditProductDto!) {
+    editProduct (input: $input) {
+        ok
+        error
+    }
+}
+```
+
 - Variables
+
+```editProduct_variables
+{
+  "input": {
+    "productName": "",
+    "description": "",
+    "startPrice": "",
+    "productId": 1,
+    "deleteImage": true
+  }
+}
+```
+
+- Error Response:
+  - `Product not found`: `productId`가 일치하는 `Product`를 찾을 수 없음
+  - `Not your product`: `Product`의 `seller`가 현재 로그인한 `User`가 아님
+  - `Can't edit product`: `progress`가 `Waiting`이 아님
 
 **editProgress**
 
@@ -411,8 +607,29 @@ query getInProgressProducts ($input: GetAllProductsDto!) {
   `Product`의 `progress`를 다음 단계로 `update`
 
 - Query
+
+```editProgress
+mutation editProgress ($input: EditProgressDto!) {
+    editProgress (input: $input) {
+        ok
+        error
+    }
+}
+```
+
 - Variables
-  _no variables_
+
+```editProgress_variables
+{
+  "input": {
+    "productId": 1
+  }
+}
+```
+
+- Error Response:
+  - `Product not found`: `productId`가 일치하는 `Product`를 찾을 수 없음
+  - `Can't edit progress`: 권한 없음 _e.g `Closed` -> `Paid`일 때 `User`가 `bidder`가 아닐 때_
 
 **createBidding**
 
@@ -420,7 +637,33 @@ query getInProgressProducts ($input: GetAllProductsDto!) {
   `Product`의 `progress`가 `Waiting`일 때 `startPrice`로 입찰을 하고 `remainingTime`을 현재 시각에서 10분 후로 `update`
 
 - Query
+
+```createBidding
+mutation createBidding ($input: CreateBiddingDto!) {
+    createBidding (input: $input) {
+        ok
+        error
+    }
+}
+
+```
+
 - Variables
+
+```createBidding_variables
+{
+  "input": {
+    "productId": 1,
+    "startPrice": 1000
+  }
+}
+```
+
+- Error Response:
+  - `Product not found`: `productId`와 일치하는 `Product`를 찾을 수 없음
+  - `Can't bid on your product`: 로그인 한 `User`가 `Product`의 `seller`임
+  - `The auction has already started`: `progress`가 `Waiting`이 아님
+  - `Check the starting price again`: `startPrice`가 일치하지 않음
 
 **updateBidding**
 
@@ -428,7 +671,34 @@ query getInProgressProducts ($input: GetAllProductsDto!) {
   `Product`의 `progress`가 `InProgress`일 때 `bidPrice`보다 큰 금액으로 상위 입찰을 하고 `remainingTime`을 현재 시각에서 10분 후로 다시 `update`
 
 - Query
+
+```updateBidding
+mutation updateBidding ($input: UpdateBiddingDto!) {
+    updateBidding (input: $input) {
+        ok
+        error
+    }
+}
+
+```
+
 - Variables
+
+```updateBidding_variables
+{
+  "input": {
+    "productId": 1,
+    "bidPrice": 1500
+  }
+}
+```
+
+- Error Response:
+  - `Product not found`: `productId`와 일치하는 `Product`를 찾을 수 없음
+  - `Can't bid on your product`: 로그인 한 `User`가 `Product`의 `seller`임
+  - `The auction has already started`: `progress`가 `InProgress`가 아님
+  - `Already bid on product`: 이미 `Product`에 입찰했고 `bidder`가 로그인한 `User`임
+  - `Bid price must be more than bidPrice`: 입찰하려는 금액이 `bidPrice`보다 작거나 같음
 
 **uploadImage**
 
@@ -436,7 +706,27 @@ query getInProgressProducts ($input: GetAllProductsDto!) {
   `S3`에 객체를 업로드하고 객체의 정보를 `File`에 저장
 
 - Query
+
+```uploadImage
+mutation uploadImage ($productId: Float!, $file: Upload!) {
+    uploadImage (productId: $productId, file: $file) {
+        ok
+        error
+    }
+}
+
+```
+
 - Variables
+
+```uploadImage_variables
+{
+  "productId": 1,
+  "file": // Image File
+}
+```
+
+- Error Response:
 
 ---
 
