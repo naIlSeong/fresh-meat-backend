@@ -122,9 +122,10 @@ _Note: 별도로 `Public`을 명시하지 않은 API는 `login`한 유저만 요
 
 **me**
 
-현재 로그인되어있는 유저의 정보를 요청
+- Notes:
+  현재 로그인되어있는 유저의 정보를 요청
 
-- query
+- Query
 
 ```me query
 query {
@@ -143,15 +144,16 @@ query {
 }
 ```
 
-- variables
+- Variables
   _no variables_
 
 **userDetail**
 
-_Note: Public Query_
-유저 한명의 정보와 `progress`가 `Waiting`이거나 `InProgress`인 그 유저가 업로드한 `product`를 요청
+- Notes:
+  _Public Query_
+  유저 한명의 정보와 `progress`가 `Waiting`이거나 `InProgress`인 그 유저가 업로드한 `Product`를 요청
 
-- query
+- Query
 
 ```userDetail
 query userDetail ($input: UserDetailDto!) {
@@ -174,7 +176,7 @@ query userDetail ($input: UserDetailDto!) {
 }
 ```
 
-- variables
+- Variables
 
 ```userDetail_varialbles
 {
@@ -186,9 +188,10 @@ query userDetail ($input: UserDetailDto!) {
 
 **myProfile**
 
-`progress`가 `Paid`이거나 `Closed`이거나 `Completed`인 유저가 업로드한 `uploadedProduct`와 유저가 `bidding`한 `product`를 요청
+- Notes:
+  `progress`가 `Paid`이거나 `Closed`이거나 `Completed`인 유저가 업로드한 `uploadedProduct`와 유저가 `bidding`한 `Product`를 요청
 
-- query
+- Query
 
 ```myProfile
 query {
@@ -219,15 +222,16 @@ query {
 }
 ```
 
-- variables
+- Variables
   _no variables_
 
 **productDetail**
 
-_Note: Public Query_
-`product`의 정보와 `seller`, `bidder`의 정보를 요청
+- Notes:
+  _Public Query_
+  `Product`의 정보와 `seller`, `bidder`의 정보를 요청
 
-- query
+- Query
 
 ```productDetail
 query productDetail ($input: ProductDetailDto!) {
@@ -252,7 +256,7 @@ query productDetail ($input: ProductDetailDto!) {
 }
 ```
 
-- variables
+- Variables
 
 ```productDetail_variables
 {
@@ -264,9 +268,11 @@ query productDetail ($input: ProductDetailDto!) {
 
 **getWaitingProducts**
 
-_Note: Public Query_
+- Notes:
+  _Public Query_
+  `progress`가 `Waiting`인 모든 `Product`를 요청
 
-- query
+- Query
 
 ```getWaitingProducts
 query getWaitingProducts ($input: GetAllProductsDto!) {
@@ -285,7 +291,7 @@ query getWaitingProducts ($input: GetAllProductsDto!) {
 }
 ```
 
-- variables
+- Variables
 
 ```getWaitingProducts_variables
 {
@@ -297,9 +303,11 @@ query getWaitingProducts ($input: GetAllProductsDto!) {
 
 **getInProgressProducts**
 
-_Note: Public Query_
+- Notes:
+  _Public Query_
+  `progress`가 `InProgress`인 모든 `Product`를 요청
 
-- query
+- Query
 
 ```getInProgressProducts
 query getInProgressProducts ($input: GetAllProductsDto!) {
@@ -318,7 +326,7 @@ query getInProgressProducts ($input: GetAllProductsDto!) {
 }
 ```
 
-- variables
+- Variables
 
 ```getInProgressProducts_variables
 {
@@ -332,69 +340,103 @@ query getInProgressProducts ($input: GetAllProductsDto!) {
 
 **createUser**
 
-_Note: Public Mutation_
+- Notes:
+  _Public Mutation_
+  새로운 `User`를 생성
 
-- query
-- variables
+- Query
+- Variables
 
 **login**
 
-_Note: Public Mutation_
-
-- query
-- variables
+- Notes:
+  _Public Mutation_
+  `Session Storage`에 `Login`한 `User`의 정보를 저장
+- Query
+- Variables
 
 **logout**
 
-_Note: Public Mutation_
+- Notes:
+  _Public Mutation_
+  `Session Storage`에 저장된 `User`의 정보를 삭제
 
-- query
-- variables
+- Query
+- Variables
+  _no variables_
 
 **updateUser**
 
-- query
-- variables
+- Notes:
+  `User`의 정보를 `update`
+
+- Query
+- Variables
 
 **deleteUser**
 
-- query
-- variables
+- Notes:
+  `User`의 정보를 `Database`와 `Session Storage`에서 삭제
+
+- Query
+- Variables
 
 **uploadProduct**
 
-- query
-- variables
+- Notes:
+  새로운 `Product`를 `upload`하고 `File`이 있으면 `uploadImage`를 호출해서 `S3`에 객체를 업로드
+
+- Query
+- Variables
 
 **deleteProduct**
 
-- query
-- variables
+- Notes:
+  `Product`를 삭제하고 `File`이 있으면 `deleteImage`를 호출해서 `S3`에서 객체를 삭제
+
+- Query
+- Variables
 
 **editProduct**
 
-- query
-- variables
+- Notes:
+  `Product`의 정보를 `update`
+
+- Query
+- Variables
 
 **editProgress**
 
-- query
-- variables
+- Notes:
+  `Product`의 `progress`를 다음 단계로 `update`
+
+- Query
+- Variables
+  _no variables_
 
 **createBidding**
 
-- query
-- variables
+- Notes:
+  `Product`의 `progress`가 `Waiting`일 때 `startPrice`로 입찰을 하고 `remainingTime`을 현재 시각에서 10분 후로 `update`
+
+- Query
+- Variables
 
 **updateBidding**
 
-- query
-- variables
+- Notes:
+  `Product`의 `progress`가 `InProgress`일 때 `bidPrice`보다 큰 금액으로 상위 입찰을 하고 `remainingTime`을 현재 시각에서 10분 후로 다시 `update`
+
+- Query
+- Variables
 
 **uploadImage**
 
-- query
-- variables
+- Notes:
+  `S3`에 객체를 업로드하고 객체의 정보를 `File`에 저장
+
+- Query
+- Variables
 
 ---
 
