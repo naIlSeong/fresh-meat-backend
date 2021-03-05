@@ -124,7 +124,8 @@ type FileObjectType {
 **me**
 
 - Notes:
-  현재 로그인되어있는 유저의 정보를 요청
+
+현재 로그인되어있는 유저의 정보를 요청
 
 - Query
 
@@ -146,14 +147,17 @@ query {
 ```
 
 - Variables
-  _no variables_
+
+_no variables_
+
 - Error Response:
 
 **userDetail**
 
 - Notes:
-  _Public Query_
-  유저 한명의 정보와 `progress`가 `Waiting`이거나 `InProgress`인 그 유저가 업로드한 `Product`를 요청
+
+_Public Query_
+유저 한명의 정보와 `progress`가 `Waiting`이거나 `InProgress`인 그 유저가 업로드한 `Product`를 요청
 
 - Query
 
@@ -194,7 +198,8 @@ query userDetail ($input: UserDetailDto!) {
 **myProfile**
 
 - Notes:
-  `progress`가 `Paid`이거나 `Closed`이거나 `Completed`인 유저가 업로드한 `uploadedProduct`와 유저가 `bidding`한 `Product`를 요청
+
+`progress`가 `Paid`이거나 `Closed`이거나 `Completed`인 유저가 업로드한 `uploadedProduct`와 유저가 `bidding`한 `Product`를 요청
 
 - Query
 
@@ -228,15 +233,17 @@ query {
 ```
 
 - Variables
-  _no variables_
+
+_no variables_
 
 - Error Response:
 
 **productDetail**
 
 - Notes:
-  _Public Query_
-  `Product`의 정보와 `seller`, `bidder`의 정보를 요청
+
+_Public Query_
+`Product`의 정보와 `seller`, `bidder`의 정보를 요청
 
 - Query
 
@@ -279,8 +286,9 @@ query productDetail ($input: ProductDetailDto!) {
 **getWaitingProducts**
 
 - Notes:
-  _Public Query_
-  `progress`가 `Waiting`인 모든 `Product`를 요청
+
+_Public Query_
+`progress`가 `Waiting`인 모든 `Product`를 요청
 
 - Query
 
@@ -316,8 +324,9 @@ query getWaitingProducts ($input: GetAllProductsDto!) {
 **getInProgressProducts**
 
 - Notes:
-  _Public Query_
-  `progress`가 `InProgress`인 모든 `Product`를 요청
+
+_Public Query_
+`progress`가 `InProgress`인 모든 `Product`를 요청
 
 - Query
 
@@ -355,8 +364,9 @@ query getInProgressProducts ($input: GetAllProductsDto!) {
 **createUser**
 
 - Notes:
-  _Public Mutation_
-  새로운 `User`를 생성
+
+_Public Mutation_
+새로운 `User`를 생성
 
 - Query
 
@@ -389,8 +399,10 @@ mutation createUser ($input: CreateUserDto!) {
 **login**
 
 - Notes:
-  _Public Mutation_
-  `Session Storage`에 `Login`한 `User`의 정보를 저장
+
+_Public Mutation_
+`Session Storage`에 `Login`한 `User`의 정보를 저장
+
 - Query
 
 ```login
@@ -420,8 +432,9 @@ mutation login ($input: LoginDto!) {
 **logout**
 
 - Notes:
-  _Public Mutation_
-  `Session Storage`에 저장된 `User`의 정보를 삭제
+
+_Public Mutation_
+`Session Storage`에 저장된 `User`의 정보를 삭제
 
 - Query
 
@@ -435,7 +448,9 @@ mutation logout {
 ```
 
 - Variables
-  _no variables_
+
+_no variables_
+
 - Error Response:
 
   - `Error: Destroy session`: `Session Storage`에 저장된 `User`의 정보를 삭제하는 과정에서 예기치 못한 에러가 발생
@@ -443,7 +458,8 @@ mutation logout {
 **updateUser**
 
 - Notes:
-  `User`의 정보를 `update`
+
+`User`의 정보를 `update`
 
 - Query
 
@@ -476,7 +492,8 @@ mutation updateUser ($input: UpdateUserDto!) {
 **deleteUser**
 
 - Notes:
-  `User`의 정보를 `Database`와 `Session Storage`에서 삭제
+
+`User`의 정보를 `Database`와 `Session Storage`에서 삭제
 
 - Query
 
@@ -505,7 +522,8 @@ mutation deleteUser ($input: DeleteUserDto!) {
 **uploadProduct**
 
 - Notes:
-  새로운 `Product`를 `upload`
+
+새로운 `Product`를 `upload`
 
 - Query
 
@@ -538,7 +556,8 @@ mutation uploadProduct ($input: UploadProductDto!) {
 **deleteProduct**
 
 - Notes:
-  `Product`를 삭제하고 `File`이 있으면 `deleteImage`를 호출해서 `S3`에서 객체를 삭제
+
+`Product`를 삭제하고 `File`이 있으면 `deleteImage`를 호출해서 `S3`에서 객체를 삭제
 
 - Query
 
@@ -569,7 +588,8 @@ mutation deleteProduct ($input: DeleteProductDto!) {
 **editProduct**
 
 - Notes:
-  `Product`의 정보를 `update`하고 `deleteImage`가 `true`이면 `deleteImage`를 호출
+
+`Product`의 정보를 `update`하고 `deleteImage`가 `true`이면 `deleteImage`를 호출
 
 - Query
 
@@ -604,7 +624,8 @@ mutation editProduct ($input: EditProductDto!) {
 **editProgress**
 
 - Notes:
-  `Product`의 `progress`를 다음 단계로 `update`
+
+`Product`의 `progress`를 다음 단계로 `update`
 
 - Query
 
@@ -634,7 +655,8 @@ mutation editProgress ($input: EditProgressDto!) {
 **createBidding**
 
 - Notes:
-  `Product`의 `progress`가 `Waiting`일 때 `startPrice`로 입찰을 하고 `remainingTime`을 현재 시각에서 10분 후로 `update`
+
+`Product`의 `progress`가 `Waiting`일 때 `startPrice`로 입찰을 하고 `remainingTime`을 현재 시각에서 10분 후로 `update`
 
 - Query
 
@@ -668,7 +690,8 @@ mutation createBidding ($input: CreateBiddingDto!) {
 **updateBidding**
 
 - Notes:
-  `Product`의 `progress`가 `InProgress`일 때 `bidPrice`보다 큰 금액으로 상위 입찰을 하고 `remainingTime`을 현재 시각에서 10분 후로 다시 `update`
+
+`Product`의 `progress`가 `InProgress`일 때 `bidPrice`보다 큰 금액으로 상위 입찰을 하고 `remainingTime`을 현재 시각에서 10분 후로 다시 `update`
 
 - Query
 
@@ -703,7 +726,8 @@ mutation updateBidding ($input: UpdateBiddingDto!) {
 **uploadImage**
 
 - Notes:
-  `S3`에 객체를 업로드하고 객체의 정보를 `File`에 저장
+
+`S3`에 객체를 업로드하고 객체의 정보를 `File`에 저장
 
 - Query
 
