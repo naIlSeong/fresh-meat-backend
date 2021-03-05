@@ -121,6 +121,7 @@ type FileObjectType {
 _Note: 별도로 `Public`을 명시하지 않은 API는 `login`한 유저만 요청할 수 있습니다._
 
 **me**
+
 현재 로그인되어있는 유저의 정보를 요청
 
 - query
@@ -146,6 +147,7 @@ query {
   _no variables_
 
 **userDetail**
+
 _Note: Public Query_
 유저 한명의 정보와 `progress`가 `Waiting`이거나 `InProgress`인 그 유저가 업로드한 `product`를 요청
 
@@ -183,6 +185,7 @@ query userDetail ($input: UserDetailDto!) {
 ```
 
 **myProfile**
+
 `progress`가 `Paid`이거나 `Closed`이거나 `Completed`인 유저가 업로드한 `uploadedProduct`와 유저가 `bidding`한 `product`를 요청
 
 - query
@@ -220,6 +223,7 @@ query {
   _no variables_
 
 **productDetail**
+
 _Note: Public Query_
 `product`의 정보와 `seller`, `bidder`의 정보를 요청
 
@@ -259,6 +263,7 @@ query productDetail ($input: ProductDetailDto!) {
 ```
 
 **getWaitingProducts**
+
 _Note: Public Query_
 
 - query
@@ -291,13 +296,14 @@ query getWaitingProducts ($input: GetAllProductsDto!) {
 ```
 
 **getInProgressProducts**
+
 _Note: Public Query_
 
 - query
 
 ```getInProgressProducts
-query getWaitingProducts ($input: GetAllProductsDto!) {
-  getWaitingProducts (input: $input) {
+query getInProgressProducts ($input: GetAllProductsDto!) {
+  getInProgressProducts (input: $input) {
     ok
     error
     maxPage
@@ -325,18 +331,21 @@ query getWaitingProducts ($input: GetAllProductsDto!) {
 ### Mutation
 
 **createUser**
+
 _Note: Public Mutation_
 
 - query
 - variables
 
 **login**
+
 _Note: Public Mutation_
 
 - query
 - variables
 
 **logout**
+
 _Note: Public Mutation_
 
 - query
