@@ -152,6 +152,8 @@ _no variables_
 
 - Error Response:
 
+</br>
+
 **userDetail**
 
 - Notes:
@@ -195,6 +197,8 @@ query userDetail ($input: UserDetailDto!) {
 - Error Response:
   - `User not found`: `userId`가 일치하는 `User`를 찾지 못함
 
+</br>
+
 **myProfile**
 
 - Notes:
@@ -237,6 +241,8 @@ query {
 _no variables_
 
 - Error Response:
+
+</br>
 
 **productDetail**
 
@@ -283,6 +289,8 @@ query productDetail ($input: ProductDetailDto!) {
 - Error Response:
   - `Product not found`: `productId`가 일치하는 `Product`를 찾지 못함
 
+</br>
+
 **getWaitingProducts**
 
 - Notes:
@@ -320,6 +328,8 @@ query getWaitingProducts ($input: GetAllProductsDto!) {
 ```
 
 - Error Response:
+
+</br>
 
 **getInProgressProducts**
 
@@ -359,6 +369,8 @@ query getInProgressProducts ($input: GetAllProductsDto!) {
 
 - Error Response:
 
+</br>
+
 ### Mutation
 
 **createUser**
@@ -396,6 +408,8 @@ mutation createUser ($input: CreateUserDto!) {
   - `Already exist username`: 이미 `username`이 동일한 `User`가 존재
   - `Already exist email`: 이미 `email`이 동일한 `User`가 존재
 
+</br>
+
 **login**
 
 - Notes:
@@ -429,6 +443,8 @@ mutation login ($input: LoginDto!) {
   - `Email not found`: `email`이 일치하는 `User`가 없음
   - `Wrong password`: `email`이 일치하는 `User`의 `password`와 일치하지않는 `password`
 
+</br>
+
 **logout**
 
 - Notes:
@@ -454,6 +470,8 @@ _no variables_
 - Error Response:
 
   - `Error: Destroy session`: `Session Storage`에 저장된 `User`의 정보를 삭제하는 과정에서 예기치 못한 에러가 발생
+
+</br>
 
 **updateUser**
 
@@ -489,6 +507,8 @@ mutation updateUser ($input: UpdateUserDto!) {
   - `Already exist email`: 변경하고자 하는 `email`이 이미 사용 중
   - `Same password`: 현재의 `password`와 변경하고자 하는 `password`가 동일할 때
 
+</br>
+
 **deleteUser**
 
 - Notes:
@@ -518,6 +538,8 @@ mutation deleteUser ($input: DeleteUserDto!) {
 
 - Error Response:
   - `Check password again`: `password`가 일치하지 않음
+
+</br>
 
 **uploadProduct**
 
@@ -553,6 +575,8 @@ mutation uploadProduct ($input: UploadProductDto!) {
   - `Product name is required`: `productName`이 존재하지 않음
   - `Start price is required`: `startPrice`가 존재하지 않음
 
+</br>
+
 **deleteProduct**
 
 - Notes:
@@ -584,6 +608,8 @@ mutation deleteProduct ($input: DeleteProductDto!) {
   - `Product not found`: `productId`가 일치하는 `Product`를 찾을 수 없음
   - `Not your product`: `Product`의 `seller`가 현재 로그인한 `User`가 아님
   - `Can't delete product`: `progress`가 `Waiting`이거나 `Completed`가 아님
+
+</br>
 
 **editProduct**
 
@@ -621,6 +647,8 @@ mutation editProduct ($input: EditProductDto!) {
   - `Not your product`: `Product`의 `seller`가 현재 로그인한 `User`가 아님
   - `Can't edit product`: `progress`가 `Waiting`이 아님
 
+</br>
+
 **editProgress**
 
 - Notes:
@@ -651,6 +679,8 @@ mutation editProgress ($input: EditProgressDto!) {
 - Error Response:
   - `Product not found`: `productId`가 일치하는 `Product`를 찾을 수 없음
   - `Can't edit progress`: 권한 없음 _e.g `Closed` -> `Paid`일 때 `User`가 `bidder`가 아닐 때_
+
+</br>
 
 **createBidding**
 
@@ -686,6 +716,8 @@ mutation createBidding ($input: CreateBiddingDto!) {
   - `Can't bid on your product`: 로그인 한 `User`가 `Product`의 `seller`임
   - `The auction has already started`: `progress`가 `Waiting`이 아님
   - `Check the starting price again`: `startPrice`가 일치하지 않음
+
+</br>
 
 **updateBidding**
 
@@ -723,6 +755,8 @@ mutation updateBidding ($input: UpdateBiddingDto!) {
   - `Already bid on product`: 이미 `Product`에 입찰했고 `bidder`가 로그인한 `User`임
   - `Bid price must be more than bidPrice`: 입찰하려는 금액이 `bidPrice`보다 작거나 같음
 
+</br>
+
 **uploadImage**
 
 - Notes:
@@ -751,6 +785,8 @@ mutation uploadImage ($productId: Float!, $file: Upload!) {
 ```
 
 - Error Response:
+
+</br>
 
 ---
 
