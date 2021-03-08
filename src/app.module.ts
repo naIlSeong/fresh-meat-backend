@@ -19,7 +19,8 @@ import { File } from './file/file.entity';
       context: ({ req, res }) => ({ req, res }),
       cors: {
         credentials: true,
-        origin: true,
+        origin:
+          process.env.NODE_ENV === 'production' ? process.env.MAIN_DOMAIN : '*',
       },
     }),
     ConfigModule.forRoot({
