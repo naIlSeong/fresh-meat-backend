@@ -7676,7 +7676,7 @@
         "affectsGlobalScope": false
       },
       "../src/main.ts": {
-        "version": "7734b357ac65d68d93250fe6210b53756311a9726db1a6ea66443f5adb140a9a",
+        "version": "f17ce51bc78d660cea095116ad330bd805fa2acebecb4da64e85e5f58c0e9b3e",
         "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
         "affectsGlobalScope": false
       },
