@@ -25,7 +25,7 @@ async function bootstrap() {
     }
     const app = await core_1.NestFactory.create(app_module_1.AppModule, { httpsOptions });
     app.enableCors({
-        origin: process.env.MAIN_DOMAIN_WITH_PROTOCOL,
+        origin: true,
         methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
         credentials: true,
         maxAge: 3600,
