@@ -61,6 +61,7 @@ AppModule = __decorate([
                     SSL_KEY_PATH: Joi.string(),
                     PORT: Joi.string(),
                     MAIN_DOMAIN: Joi.string(),
+                    MAIN_DOMAIN_WITH_PROTOCOL: Joi.string(),
                 }),
             }),
             typeorm_1.TypeOrmModule.forRoot({

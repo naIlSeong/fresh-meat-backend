@@ -7641,7 +7641,7 @@
         "affectsGlobalScope": false
       },
       "../src/app.module.ts": {
-        "version": "60964c21bdacfbae6de4d795877becb78491dd5556214472684a153e44cbeeb6",
+        "version": "5318533811e29fbf4a4a4c10bd33dfbff0812ccf374d6b16c9e7a2b2d74383d5",
         "signature": "b82491e2990291580288c5602d4c017238977749d52b17391f0e45d9a29be644",
         "affectsGlobalScope": false
       },
@@ -7676,7 +7676,7 @@
         "affectsGlobalScope": false
       },
       "../src/main.ts": {
-        "version": "c7b8997856d6a1585482416d8258caa71b96a2525fefd8ad0554e04b96bf5bb8",
+        "version": "7734b357ac65d68d93250fe6210b53756311a9726db1a6ea66443f5adb140a9a",
         "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
         "affectsGlobalScope": false
       },
