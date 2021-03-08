@@ -30,7 +30,7 @@ AppModule = __decorate([
                 context: ({ req, res }) => ({ req, res }),
                 cors: {
                     credentials: true,
-                    origin: process.env.NODE_ENV === 'production' ? process.env.MAIN_DOMAIN : '*',
+                    origin: true,
                 },
             }),
             config_1.ConfigModule.forRoot({

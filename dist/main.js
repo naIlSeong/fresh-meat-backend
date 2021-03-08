@@ -24,6 +24,11 @@ async function bootstrap() {
         };
     }
     const app = await core_1.NestFactory.create(app_module_1.AppModule, { httpsOptions });
+    app.enableCors({
+        origin: true,
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+        credentials: true,
+    });
     const configService = app.get(config_1.ConfigService);
     const RedisStore = connectRedis(session);
     const redisClient = redis.createClient({
