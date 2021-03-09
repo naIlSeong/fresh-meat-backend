@@ -33,6 +33,8 @@
 
 ### Preview
 
+> 직접 확인해 볼 수 있습니다! 😁 &rarr; https://freshmeat.page/
+
 - **회원가입 & 로그인**
   <img src="./images/signup_login.gif" />
 
