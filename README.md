@@ -7,25 +7,66 @@
 ## Table of Contents
 
 - [General Info](#general-Info)
+  - [Stack](#stack)
+  - [Preview](#preview)
 - [Schema](#schema)
   - [User](#user)
   - [Product](#product)
   - [File](#file)
-- [API](#api)
-  - [Query](#query)
-  - [Mutation](#mutation)
 - [Unit Test](#unit-test)
   - [User Service](#user-service)
   - [Product Service](#product-service)
   - [File Service](#file-service)
   - [Coverage](#coverage)
+- [API](#api)
+  - [Query](#query)
+  - [Mutation](#mutation)
 - [Memo](#memo)
 
 ---
 
 ## General Info
 
+### Stack
+
 프레임워크로 <a href="https://nestjs.com/" target="_blank">NestJS</a>를 사용해서 <a href="https://graphql.org/" target="_blank">GraphQL</a> API를 구현했습니다. 데이터베이스로 <a href="https://www.postgresql.org/" target="_blank">PostgreSQL</a>을 사용하고 ORM은 <a href="https://typeorm.io/#/" target="_blank">TypeORM</a>을 사용했습니다. Session Storage로 사용하는 <a href="https://redis.io/" target="_blank">Redis</a>에 로그인한 사용자의 정보를 저장합니다.
+
+### Preview
+
+- **회원가입 & 로그인**
+  <img src="./images/signup_login.gif" />
+
+</br>
+
+- **상품 수정**
+  <img src="./images/edit_product.gif" />
+
+</br>
+
+- **상품 업로드**
+  <img src="./images/upload_product.gif" />
+
+</br>
+
+- **입찰**
+  <img src="./images/create_bidding.gif" />
+
+</br>
+
+- **상회 입찰**
+  <img src="./images/update_bidding.gif" />
+
+</br>
+
+- **지불 확인 요청**
+  <img src="./images/request_confirm.gif" />
+
+</br>
+
+- **지불 확인**
+  <img src="./images/confirm_payment.gif" />
+
+</br>
 
 ---
 
@@ -111,6 +152,28 @@ type FileObjectType {
   fileName: String!
 }
 ```
+
+---
+
+## Unit Test
+
+유닛 테스트를 위해 자바스크립트 테스팅 프레임워크인 <a href="https://jestjs.io/" target="_blank">Jest</a>를 사용했습니다.
+
+### User Service
+
+<img src="./images/user-service-unit-test.png" />
+
+### Product Service
+
+<img src="./images/product-service-unit-test.png" />
+
+### File Service
+
+<img src="./images/file-service-unit-test.png" />
+
+### Coverage
+
+<img src="./images/unit-test-coverage.png" />
 
 ---
 
@@ -787,40 +850,6 @@ mutation uploadImage ($productId: Float!, $file: Upload!) {
 - Error Response:
 
 </br>
-
----
-
-## Unit Test
-
-유닛 테스트를 위해 자바스크립트 테스팅 프레임워크인 <a href="https://jestjs.io/" target="_blank">Jest</a>를 사용했습니다.
-
-### User Service
-
-<img src="./images/user-service-unit-test.png" />
-
-### Product Service
-
-<img src="./images/product-service-unit-test.png" />
-
-### File Service
-
-<img src="./images/file-service-unit-test.png" />
-
-### Coverage
-
-<img src="./images/unit-test-coverage.png" />
-
----
-
-</br>
-<div style="text-align:center">
-  <img src="./images/upload-image-postman.png" />
-</div>
-<div style="text-align:center">
-  <span style="font-weight:bold">
-    uploadImage test using postman
-  </span>
-</div>
 
 ---
 
