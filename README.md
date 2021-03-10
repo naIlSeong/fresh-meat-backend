@@ -1,6 +1,7 @@
 # Fresh meat
 
 팔고 싶은 상품을 경매로 사고팔 수 있도록 중개해 주는 서비스
+**https://freshmeat.page/**
 
 ---
 
@@ -33,7 +34,8 @@
 
 ### Preview
 
-> 직접 확인해 볼 수 있습니다! 😁 &rarr; https://freshmeat.page/
+> 직접 확인해 볼 수 있습니다! 😁 &rarr; **https://freshmeat.page/**
+> Frontend repo &rarr; **https://github.com/naIlSeong/fresh-meat-frontend**
 
 - **회원가입 & 로그인**
   <img src="./images/signup_login.gif" />
