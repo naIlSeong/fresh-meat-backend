@@ -38,37 +38,37 @@
 > Frontend repo &rarr; **https://github.com/naIlSeong/fresh-meat-frontend**
 
 - **회원가입 & 로그인**
-  <img src="./images/signup_login.gif" />
+  <img src="./images/login.gif" />
 
 </br>
 
 - **상품 수정**
-  <img src="./images/edit_product.gif" />
+  <img src="./images/edit.gif" />
 
 </br>
 
 - **상품 업로드**
-  <img src="./images/upload_product.gif" />
+  <img src="./images/upload.gif" />
 
 </br>
 
 - **입찰**
-  <img src="./images/create_bidding.gif" />
+  <img src="./images/newbid.gif" />
 
 </br>
 
 - **상회 입찰**
-  <img src="./images/update_bidding.gif" />
+  <img src="./images/updatebid.gif" />
 
 </br>
 
 - **지불 확인 요청**
-  <img src="./images/request_confirm.gif" />
+  <img src="./images/request.gif" />
 
 </br>
 
 - **지불 확인**
-  <img src="./images/confirm_payment.gif" />
+  <img src="./images/confirm.gif" />
 
 </br>
 
